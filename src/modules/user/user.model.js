@@ -64,4 +64,7 @@ userModel.post("save", function (doc, next) {
   next();
 });
 
-module.exports = User = model("User", userModel);
+const User = model("User", userModel);
+
+module.exports = User;
+
