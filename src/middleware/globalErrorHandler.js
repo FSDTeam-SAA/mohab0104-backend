@@ -1,5 +1,6 @@
 const config = require("../config");
 const handleCastError = require("../error/handleCastError");
+const handleDuplicateError = require("../error/handleDuplicateError");
 const handleValidationError = require("../error/handleValidationError");
 
 const globalErrorHandler = (error, req, res, next) => {
@@ -23,7 +24,12 @@ const globalErrorHandler = (error, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
-  } else if (error instanceof Error) {
+//   } else if (error?.code === 11000) {
+//     const simplifiedError = handleDuplicateError(error);
+//     statusCode = simplifiedError?.statusCode;
+//     message = simplifiedError?.message;
+//     errorSource = simplifiedError?.errorSource;
+//   } else if (error instanceof Error) {
     message = error?.message;
     errorSource = [
       {
