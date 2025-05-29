@@ -17,11 +17,26 @@ const loginUser = async (req, res) => {
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const result = await authService.forgotPassword(email);
+    await authService.forgotPassword(email);
 
     return res.status(200).json({
       success: true,
       message: "Token sent to your email",
+      //   data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const verifyToken = async (req, res) => {
+  try {
+    const { otp, email } = req.body;
+    const result = await authService.verifyToken(otp, email);
+
+    return res.status(200).json({
+      success: true,
+      message: "Token verified successfully",
       data: result,
     });
   } catch (error) {
@@ -32,6 +47,7 @@ const forgotPassword = async (req, res) => {
 const authController = {
   loginUser,
   forgotPassword,
+  verifyToken,
 };
 
 module.exports = authController;
