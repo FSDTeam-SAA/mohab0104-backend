@@ -24,8 +24,8 @@ const userModel = new Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "company"],
-      default: "company",
+      enum: ["admin", "user"],
+      default: "user",
     },
     country: {
       type: String,
@@ -67,4 +67,3 @@ userModel.post("save", function (doc, next) {
 const User = model("User", userModel);
 
 module.exports = User;
-
