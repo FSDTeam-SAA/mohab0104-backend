@@ -32,8 +32,26 @@ const loginUser = async (payload) => {
   };
 };
 
+const forgotPassword = async (email) => {
+  const isExistingUser = await User.findOne({
+    email,
+  });
+  if (!isExistingUser) throw new Error("User not found");
+
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  const otpExpires = new Date(Date.now() + emailExpires);
+
+  isExistingUser.otp = otp;
+  isExistingUser.otpExpires = otpExpires;
+  await isExistingUser.save();
+
+//   await 
+
+};
+
 const authService = {
   loginUser,
+  forgotPassword,
 };
 
 module.exports = authService;
