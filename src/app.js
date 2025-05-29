@@ -4,6 +4,7 @@ const cors = require("cors");
 const notFound = require("./middleware/notFound");
 const router = require("./router");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
 
@@ -13,6 +14,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
 
 app.use("/api", router);
 

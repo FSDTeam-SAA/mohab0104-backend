@@ -1,3 +1,5 @@
+const config = require("../../config");
+const { createToken } = require("../../utilts/tokenGenerate");
 const User = require("./user.model");
 
 const createUserInDb = async (payload) => {
@@ -5,7 +7,20 @@ const createUserInDb = async (payload) => {
   if (existingUser) throw new Error("User already exist");
 
   const result = await User.create(payload);
-  return result;
+
+  const JwtPayload = {
+    userId: result._id,
+    email: result.email,
+    role: result.role,
+  };
+
+  const accessToken = createToken(
+    JwtPayload,
+    config.JWT_SECRET,
+    config.JWT_EXPIRES_IN
+  );
+
+  return { accessToken };
 };
 
 const getAllUsersFromDb = async () => {
