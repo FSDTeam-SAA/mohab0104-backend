@@ -3,6 +3,7 @@ const userRouter = require("../module/user/user.router");
 const authRouter = require("../module/auth/auth.router");
 const { path } = require("../app");
 const blogRouter = require("../module/Blog/blog.router");
+const serviceRouter = require("../module/Services/service.router");
 
 const router = Router();
 
@@ -20,6 +21,11 @@ const moduleRouter = [
   {
     path: "/blog",
     router: blogRouter,
+  },
+  //servicesRouter
+  {
+    path: "/services",
+    router: serviceRouter,
   },
 ];
 
