@@ -16,7 +16,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-app.use("/api", router);
+app.use("/v1/api", router);
 
 app.use("/", (req, res) => {
   return res.send("Your server is running!");
