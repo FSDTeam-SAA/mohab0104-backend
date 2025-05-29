@@ -29,9 +29,25 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+const verifyToken = async (req, res) => {
+  try {
+    const { otp, email } = req.body;
+    const result = await authService.verifyToken(otp, email);
+
+    return res.status(200).json({
+      success: true,
+      message: "Token verified successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 const authController = {
   loginUser,
   forgotPassword,
+  verifyToken,
 };
 
 module.exports = authController;
