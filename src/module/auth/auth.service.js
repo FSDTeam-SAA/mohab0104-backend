@@ -1,5 +1,8 @@
 const config = require("../../config");
+const sendEmail = require("../../utilts/sendEmail");
+
 const { createToken } = require("../../utilts/tokenGenerate");
+const verificationCodeTemplate = require("../../utilts/verificationCodeTemplate");
 const User = require("../user/user.model");
 const bcrypt = require("bcryptjs");
 
@@ -38,6 +41,7 @@ const forgotPassword = async (email) => {
   });
   if (!isExistingUser) throw new Error("User not found");
 
+  const emailExpires = parseInt(15 * 60 * 1000);
   const otp = Math.floor(100000 + Math.random() * 900000);
   const otpExpires = new Date(Date.now() + emailExpires);
 
@@ -45,8 +49,13 @@ const forgotPassword = async (email) => {
   isExistingUser.otpExpires = otpExpires;
   await isExistingUser.save();
 
-//   await 
+  const result = await sendEmail({
+    to: email,
+    subject: "Password Reset OTP",
+    html: verificationCodeTemplate(otp),
+  });
 
+  return result;
 };
 
 const authService = {

@@ -17,12 +17,12 @@ const loginUser = async (req, res) => {
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const result = await authService.forgotPassword(email);
+    await authService.forgotPassword(email);
 
     return res.status(200).json({
       success: true,
       message: "Token sent to your email",
-      data: result,
+      //   data: result,
     });
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
