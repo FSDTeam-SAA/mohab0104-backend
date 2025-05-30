@@ -7,7 +7,11 @@ const router = Router();
 
 router.post("/login", authController.loginUser);
 router.post("/forgot-password", authController.forgotPassword);
-router.post("/verify-token", authController.verifyToken);
+router.post(
+  "/verify-token",
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  authController.verifyToken
+);
 
 router.post(
   "/reset-password",

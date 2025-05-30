@@ -1,4 +1,5 @@
 const config = require("../../config");
+const { companyName } = require("../../lib/companyName");
 const sendEmail = require("../../utilts/sendEmail");
 const { createToken } = require("../../utilts/tokenGenerate");
 const verificationCodeTemplate = require("../../utilts/verificationCodeTemplate");
@@ -43,24 +44,39 @@ const forgotPassword = async (email) => {
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const hashedOtp = await bcrypt.hash(otp, 10);
-
   const otpExpires = new Date(Date.now() + 15 * 60 * 1000);
+  // const otpExpires = new Date(Date.now() + 2 * 60 * 1000);
 
   isExistingUser.otp = hashedOtp;
   isExistingUser.otpExpires = otpExpires;
   await isExistingUser.save();
 
-  const result = await sendEmail({
+  const JWtToken = {
+    userId: isExistingUser._id,
+    email: isExistingUser.email,
+    role: isExistingUser.role,
+  };
+
+  const accessToken = createToken(
+    JWtToken,
+    config.JWT_SECRET,
+    config.JWT_EXPIRES_IN
+  );
+
+  await sendEmail({
     to: email,
-    subject: "Quantivo - Password Reset OTP",
+    subject: `${companyName} - Password Reset OTP`,
     html: verificationCodeTemplate(otp),
   });
 
-  return result;
+  return {
+    accessToken,
+    // result,
+  };
 };
 
 const verifyToken = async (otp, email) => {
-  if (!otp || !email) throw new Error("OTP and email are required");
+  if (!otp) throw new Error("OTP and email are required");
 
   const isExistingUser = await User.findOne({ email });
   if (!isExistingUser) throw new Error("User not found");
@@ -116,7 +132,7 @@ const resetPassword = async (payload, email) => {
       otpExpires: undefined,
     },
     { new: true }
-  );
+  ).select("-password -otp -otpExpires");
 
   return result;
 };
