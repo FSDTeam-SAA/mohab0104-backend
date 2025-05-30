@@ -6,40 +6,44 @@ const blogRouter = require("../module/Blog/blog.router");
 const serviceRouter = require("../module/Services/service.router");
 const solutionRouter = require("../module/Solution/solution.router");
 const strategyRouter = require("../module/Strategy/strategy.router");
-
+const paymentRouter = require("../module/payments/payment.router");
 const router = Router();
 
 const moduleRouter = [
   {
-    path: "/user",
+    path: '/user',
     router: userRouter,
   },
   {
-    path: "/auth",
+    path: '/auth',
     router: authRouter,
   },
   // Add other module routers here
   //blogRouter
   {
-    path: "/blog",
+    path: '/blog',
     router: blogRouter,
   },
   //servicesRouter
   {
-    path: "/services",
+    path: '/services',
     router: serviceRouter,
   },
   //solutionRouter
   {
-    path: "/solution",
+    path: '/solution',
     router: solutionRouter,
   },
   //strategyRouter
   {
-    path: "/strategy",
+    path: '/strategy',
     router: strategyRouter,
   },
-];
+  {
+    path: '/api/payment',
+    router: paymentRouter,
+  }
+]
 
 moduleRouter.forEach((route) => {
   router.use(route.path, route.router);
