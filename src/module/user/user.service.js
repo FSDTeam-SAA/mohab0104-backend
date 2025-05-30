@@ -24,16 +24,18 @@ const createUserInDb = async (payload) => {
 };
 
 const getAllUsersFromDb = async () => {
-  const users = await User.find({});
+  const users = await User.find({}).select("-password -otp -otpExpires");
   return users;
 };
 
+// not complete
 const getMyProfileFromDb = async (userId) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
   return user;
 };
 
+// not complete
 const deleteUserById = async (userId) => {
   const user = await User.findByIdAndDelete(userId);
   if (!user) throw new Error("User not found");

@@ -59,11 +59,27 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const { email } = req.user;
+    const result = await authService.changePassword(req.body, email);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 const authController = {
   loginUser,
   forgotPassword,
   verifyToken,
   resetPassword,
+  changePassword,
 };
 
 module.exports = authController;
