@@ -1,4 +1,4 @@
-const blogsAdmin = require("./blogsAdmin.controller");
+const blogsAdmin = require("./blogsAdmin.model");
 // const User = require("../models/user.model");
 const { uploadOnCloudinary } = require("../../utilts/cloudnary");
 const cloudinary = require("cloudinary").v2;
@@ -16,7 +16,10 @@ exports.createBlog = async (req, res) => {
     let imageLink;
     if (req.file) {
       try {
-        const image = await uploadOnCloudinary(req.file.buffer, "blog");
+        const image = await uploadOnCloudinary(
+          req.file.buffer ? req.file.buffer : "",
+          "blog"
+        );
         imageLink = image.secure_url;
       } catch (error) {
         return res.status(400).json({

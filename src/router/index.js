@@ -1,6 +1,11 @@
 const { Router } = require("express");
 const userRouter = require("../module/user/user.router");
 const authRouter = require("../module/auth/auth.router");
+const { path } = require("../app");
+const blogRouter = require("../module/Blog/blog.router");
+const serviceRouter = require("../module/Services/service.router");
+const solutionRouter = require("../module/Solution/solution.router");
+const strategyRouter = require("../module/Strategy/strategy.router");
 
 const router = Router();
 
@@ -12,6 +17,27 @@ const moduleRouter = [
   {
     path: "/auth",
     router: authRouter,
+  },
+  // Add other module routers here
+  //blogRouter
+  {
+    path: "/blog",
+    router: blogRouter,
+  },
+  //servicesRouter
+  {
+    path: "/services",
+    router: serviceRouter,
+  },
+  //solutionRouter
+  {
+    path: "/solution",
+    router: solutionRouter,
+  },
+  //strategyRouter
+  {
+    path: "/strategy",
+    router: strategyRouter,
   },
 ];
 

@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const servicesAdminSchema = new mongoose.Schema(
   {
-    blogTitle: {
+    serviceTitle: {
       type: String,
     },
-    blogDescription: {
+    serviceDescription: {
       type: String,
     },
     imageLink: {
