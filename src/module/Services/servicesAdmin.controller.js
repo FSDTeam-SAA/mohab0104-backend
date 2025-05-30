@@ -74,7 +74,7 @@ exports.getAllService = async (req, res) => {
     });
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     status: true,
     message: "service fetched successfully",
     data: service,
@@ -155,13 +155,13 @@ exports.updateService = async (req, res) => {
     // Update the ad item
     existingService.serviceTitle = serviceTitle;
     existingService.serviceDescription = serviceDescription;
-    // existingAd.author = author;
+    // existingServices.author = author;
 
     await existingService.save();
     return res.status(200).json({
       status: true,
       message: "service updated successfully",
-      data: existingAd,
+      data: existingService,
     });
   } catch (error) {
     console.error("Error updating service:", error);
