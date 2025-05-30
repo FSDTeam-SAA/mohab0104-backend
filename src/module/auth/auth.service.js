@@ -44,35 +44,29 @@ const forgotPassword = async (email) => {
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const hashedOtp = await bcrypt.hash(otp, 10);
-  const otpExpires = new Date(Date.now() + 15 * 60 * 1000);
-  // const otpExpires = new Date(Date.now() + 2 * 60 * 1000);
+  const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
   isExistingUser.otp = hashedOtp;
   isExistingUser.otpExpires = otpExpires;
   await isExistingUser.save();
 
-  const JWtToken = {
-    userId: isExistingUser._id,
-    email: isExistingUser.email,
-    role: isExistingUser.role,
-  };
+  // const JWtToken = {
+  //   userId: isExistingUser._id,
+  //   email: isExistingUser.email,
+  //   role: isExistingUser.role,
+  // };
 
-  const accessToken = createToken(
-    JWtToken,
-    config.JWT_SECRET,
-    config.JWT_EXPIRES_IN
-  );
+  // const accessToken = createToken(
+  //   JWtToken,
+  //   config.JWT_SECRET,
+  //   config.JWT_EXPIRES_IN
+  // );
 
   await sendEmail({
     to: email,
     subject: `${companyName} - Password Reset OTP`,
     html: verificationCodeTemplate(otp),
   });
-
-  return {
-    accessToken,
-    // result,
-  };
 };
 
 const verifyToken = async (otp, email) => {

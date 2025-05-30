@@ -25,5 +25,6 @@ router.post(
   authController.changePassword
 );
 
+
 const authRouter = router;
 module.exports = authRouter;
