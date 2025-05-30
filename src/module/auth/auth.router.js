@@ -15,5 +15,11 @@ router.post(
   authController.resetPassword
 );
 
+router.post(
+  "/change-password",
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  authController.changePassword
+);
+
 const authRouter = router;
 module.exports = authRouter;

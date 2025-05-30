@@ -1,4 +1,4 @@
-const solutions = require("./solution.service");
+const solutions = require("./solutions.model");
 
 exports.createSolution = async (req, res) => {
   try {

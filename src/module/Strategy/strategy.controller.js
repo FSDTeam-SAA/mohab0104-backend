@@ -3,7 +3,14 @@ const strategy = require("./strategy.model");
 //create strategy
 exports.createStrategy = async (req, res) => {
   try {
-    const newStrategy = await strategy.createStrategy(req.body);
+    const newStrategy = await strategy.create({
+      name: req.body.name,
+      email: req.body.email,
+      companyName: req.body.companyName,
+      dataStrategy: req.body.dataStrategy,
+      strategyDescription: req.body.strategyDescription,
+      views: 0, // Initialize views to 0
+    });
     res.status(201).json({
       status: true,
       message: "Strategy created successfully",
@@ -30,7 +37,6 @@ exports.getAllStrategies = async (req, res) => {
     const filter = {
       $or: [
         { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
         { companyName: { $regex: search, $options: "i" } },
       ],
     };
@@ -40,18 +46,19 @@ exports.getAllStrategies = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
-    const totalStrategies = await strategy.countDocuments(filter);
 
-    res.status(200).json({
+    const totalSolutions = await strategy.countDocuments(filter);
+
+    return res.status(200).json({
       status: true,
-      message: "Strategies retrieved successfully",
+      message: "Solutions retrieved successfully",
       data: strategies,
-      totalPages: Math.ceil(totalStrategies / limit),
+      totalPages: Math.ceil(totalSolutions / limit),
       currentPage: page,
     });
   } catch (error) {
     console.error("Error retrieving strategies:", error);
-    res.status(500).json({
+    return res.status(500).json({
       status: false,
       message: "Error retrieving strategies",
       error: error.message,

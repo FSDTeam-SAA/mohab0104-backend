@@ -121,12 +121,42 @@ const resetPassword = async (payload, email) => {
   return result;
 };
 
+const changePassword = async (payload, email) => {
+  const { currentPassword, newPassword } = payload;
+  if (!currentPassword || !newPassword) {
+    throw new Error("Current and new passwords are required");
+  }
+
+  const isExistingUser = await User.findOne({ email });
+  if (!isExistingUser) throw new Error("User not found");
+
+  const isPasswordMatched = await bcrypt.compare(
+    currentPassword,
+    isExistingUser.password
+  );
+  if (!isPasswordMatched) throw new Error("Invalid current password");
+
+  const hashedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.bcryptSaltRounds)
+  );
+
+  const result = await User.findOneAndUpdate(
+    { email },
+    {
+      password: hashedPassword,
+    },
+    { new: true }
+  ).select("-password -otp -otpExpires");
+  return result;
+};
 
 const authService = {
   loginUser,
   forgotPassword,
   verifyToken,
   resetPassword,
+  changePassword,
 };
 
 module.exports = authService;
