@@ -12,4 +12,8 @@ module.exports = {
     emailAddress: process.env.EMAIL_ADDRESS,
     emailPass: process.env.EMAIL_PASSWORD,
   },
+  reset: {
+    reset_password_token_secret: process.env.RESET_PASSWORD_TOKEN_SECRET,
+    reset_password_token_expires: process.env.RESET_EXPIRES_IN,
+  },
 };
