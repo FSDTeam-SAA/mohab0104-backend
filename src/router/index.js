@@ -40,7 +40,7 @@ const moduleRouter = [
     router: strategyRouter,
   },
   {
-    path: '/api/payment',
+    path: '/payment',
     router: paymentRouter,
   }
 ]
