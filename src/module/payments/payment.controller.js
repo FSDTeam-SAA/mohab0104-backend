@@ -41,7 +41,8 @@ exports.createPayment = async (req, res) => {
     })
     await paymentInfo.save()
 
-    res.json({
+    res.status(200).json({
+      success: true,
       orderId,
       message: 'Payment created. Capture the payment to complete.',
     })
@@ -75,7 +76,7 @@ exports.capturePayment = async (req, res) => {
         { status: 'success' }
       )
 
-      res.json({
+      res.status(200).json({
         status: 'COMPLETED',
         orderId: capture.result.id,
         message: 'Payment successfully captured.',
