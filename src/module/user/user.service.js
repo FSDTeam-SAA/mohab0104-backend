@@ -28,25 +28,31 @@ const getAllUsersFromDb = async () => {
   return users;
 };
 
-// not complete
-const getMyProfileFromDb = async (userId) => {
-  const user = await User.findById(userId);
+const getMyProfileFromDb = async (email) => {
+  const user = await User.findOne(email).select("-password -otp -otpExpires");
   if (!user) throw new Error("User not found");
   return user;
 };
 
-// not complete
-const deleteUserById = async (userId) => {
-  const user = await User.findByIdAndDelete(userId);
-  if (!user) throw new Error("User not found");
-  return user;
+const updateUserProfile = async (payload, email) => {
+  const isExistingUser = await User.findOne({ email });
+  if (!isExistingUser) throw new Error("User not found");
+
+  const updatedUser = await User.findOneAndUpdate(
+    {
+      email,
+    },
+    payload,
+    { new: true }
+  ).select("-password -otp -otpExpires");
+  return updatedUser;
 };
 
 const userService = {
   createUserInDb,
   getAllUsersFromDb,
   getMyProfileFromDb,
-  deleteUserById,
+  updateUserProfile,
 };
 
 module.exports = userService;

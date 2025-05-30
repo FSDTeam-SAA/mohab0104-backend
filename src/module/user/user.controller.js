@@ -27,14 +27,11 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-//! My Profile only for logged in user and get his own profile______________
-//! No own cannot access other user profile
-//! This is a protected route, so you need to be logged in to access it
-
 const getMyProfile = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const user = await userService.getUserById(userId);
+    const { email } = req.user;
+    const user = await userService.getMyProfileFromDb({ email });
+
     return res.status(200).json({
       success: true,
       message: "User profile retrieved successfully",
@@ -45,29 +42,28 @@ const getMyProfile = async (req, res) => {
   }
 };
 
-//TODO: Note: [const userId = req.user._id] when token generated, it will be added to the req object by the middleware.
-//TODO: Also check in controller where user this userId
-//TODO: also descuss it's soft delete or hard delete.....
-
-const deletedUser = async (req, res) => {
+const updateUserProfile = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const user = await userService.deleteUserById(userId);
+    const { email } = req.user;
+    const result = await userService.updateUserProfile(req.body, email);
+
     return res.status(200).json({
       success: true,
-      message: "User deleted successfully",
-      data: user,
+      message: "User profile updated successfully",
+      data: result,
     });
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
 
+
+
 const userController = {
   createUser,
   getAllUsers,
   getMyProfile,
-  deletedUser,
+  updateUserProfile,
 };
 
 module.exports = userController;
