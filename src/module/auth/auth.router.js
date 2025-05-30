@@ -1,11 +1,19 @@
 const { Router } = require("express");
 const authController = require("./auth.controller");
+const auth = require("../../middleware/auth");
+const USER_ROLE = require("../user/user.constant");
 
 const router = Router();
 
 router.post("/login", authController.loginUser);
 router.post("/forgot-password", authController.forgotPassword);
 router.post("/verify-token", authController.verifyToken);
+
+router.post(
+  "/reset-password",
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  authController.resetPassword
+);
 
 const authRouter = router;
 module.exports = authRouter;
