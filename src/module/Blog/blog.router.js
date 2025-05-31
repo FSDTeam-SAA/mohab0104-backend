@@ -6,11 +6,20 @@ const {
   deleteBlog,
   getSingleBlog,
 } = require("./blogsAdmin.controller");
+const { upload } = require("../../utilts/cloudnary");
 const router = express.Router();
 
 router.get("/get", getAllBlog);
 router.get("/:id", getSingleBlog); // Assuming you want to get a blog by ID
-router.post("/create", createBlog);
+router.post(
+  "/create",
+  upload.single("image"),
+  (req, res, next) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  createBlog
+);
 router.put("/:id", updateBlog);
 router.delete("/:id", deleteBlog);
 
