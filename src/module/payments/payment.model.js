@@ -1,14 +1,16 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+const User = require("../user/user.model");
+const servicesAdmin = require("../Services/servicesAdmin.model");
 
 const paymentInfoSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Types.ObjectId,
-      ref: 'users',
+      ref: User,
     },
     serviceId: {
       type: mongoose.Types.ObjectId,
-      ref: 'servicesAdmin',
+      ref: servicesAdmin,
     },
     amount: {
       type: Number,
@@ -18,14 +20,14 @@ const paymentInfoSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'success', 'failed'],
-      default: 'pending',
+      enum: ["pending", "success", "failed"],
+      default: "pending",
     },
   },
   {
     timestamps: true,
   }
-)
+);
 
-const paymentInfo = mongoose.model('paymentInfo', paymentInfoSchema)
-module.exports = paymentInfo
+const paymentInfo = mongoose.model("paymentInfo", paymentInfoSchema);
+module.exports = paymentInfo;
