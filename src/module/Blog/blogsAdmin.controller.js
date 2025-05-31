@@ -1,62 +1,9 @@
 const blogsAdmin = require("./blogsAdmin.model");
-// const User = require("../models/user.model");
 const {
   uploadOnCloudinary,
   sendImageToCloudinary,
 } = require("../../utilts/cloudnary");
 const cloudinary = require("cloudinary").v2;
-
-// exports.createBlog = async (req, res) => {
-//   try {
-//     const { blogTitle, blogDescription } = req.body;
-//     // const author = req.user._id; // Assuming you have user authentication middleware
-//     if (!blogTitle || !blogDescription) {
-//       return res.status(400).json({
-//         status: false,
-//         message: "All fields are required",
-//       });
-//     }
-//     let imageLink;
-//     if (req.file) {
-//       try {
-//         const image = await uploadOnCloudinary(
-//           req.file.buffer ? req.file.buffer : "",
-//           "blog"
-//         );
-//         imageLink = image.secure_url;
-//       } catch (error) {
-//         return res.status(400).json({
-//           status: false,
-//           message: "Failed to upload image",
-//         });
-//       }
-//     }
-//     // Create a new ad item
-//     const blog = new blogsAdmin({
-//       blogTitle,
-//       blogDescription,
-//       imageLink,
-//       // author,
-//     });
-//     await blog.save();
-//     return res.status(201).json({
-//       status: true,
-//       message: "blog created successfully",
-//       data: blog,
-//     });
-//   } catch (error) {
-//     console.error("Error creating blog:", error);
-//     return res.status(500).json({
-//       status: false,
-//       message: "Error creating blog",
-//       error: error.message,
-//     });
-//   }
-// };
-
-//_______________________________________
-
-//getting all blog
 
 exports.createBlog = async (req, res) => {
   try {
