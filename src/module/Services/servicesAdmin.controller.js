@@ -1,43 +1,40 @@
 const servicesAdmin = require("./servicesAdmin.model");
 // const User = require("../models/user.model");
-const { uploadOnCloudinary } = require("../../utilts/cloudnary");
+const {
+  uploadOnCloudinary,
+  sendImageToCloudinary,
+} = require("../../utilts/cloudnary");
 const cloudinary = require("cloudinary").v2;
 
 exports.createServices = async (req, res) => {
   try {
     const { serviceTitle, serviceDescription } = req.body;
-    // const author = req.user._id; // Assuming you have user authentication middleware
     if (!serviceTitle || !serviceDescription) {
       return res.status(400).json({
         status: false,
         message: "All fields are required",
       });
     }
-    let imageLink;
-    if (req.file) {
-      try {
-        const image = await uploadOnCloudinary(req.file.buffer, "service");
-        imageLink = image.secure_url;
-      } catch (error) {
-        return res.status(400).json({
-          status: false,
-          message: "Failed to upload image",
-        });
-      }
+
+    const file = req.file;
+    if (file) {
+      const imageName = `${Date.now()}-${file.originalname}`;
+      const path = file?.path;
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+
+      const service = new servicesAdmin({
+        serviceTitle,
+        serviceDescription,
+        imageLink: secure_url,
+      });
+
+      await service.save();
+      return res.status(201).json({
+        status: true,
+        message: "Service created successfully",
+        data: service,
+      });
     }
-    // Create a new ad item
-    const service = new servicesAdmin({
-      serviceTitle,
-      serviceDescription,
-      imageLink,
-      // author,
-    });
-    await service.save();
-    return res.status(201).json({
-      status: true,
-      message: "service created successfully",
-      data: service,
-    });
   } catch (error) {
     console.error("Error creating service:", error);
     return res.status(500).json({
@@ -124,7 +121,7 @@ exports.updateService = async (req, res) => {
   try {
     const id = req.params.id;
     const { serviceTitle, serviceDescription } = req.body;
-    // const author = req.user._id; // Assuming you have user authentication middleware
+
     const existingService = await servicesAdmin.findById(id);
     if (!existingService) {
       return res.status(404).json({
@@ -132,24 +129,14 @@ exports.updateService = async (req, res) => {
         message: "services not found",
       });
     }
-    // Validate the request body
-    if (!serviceTitle || !serviceDescription) {
-      return res.status(400).json({
-        status: false,
-        message: "All fields are required",
-      });
-    }
-    if (req.file) {
-      try {
-        await cloudinary.uploader.destroy(existingService.imageLink);
-        const image = await uploadOnCloudinary(req.file.buffer, "service");
-        existingService.imageLink = image.secure_url;
-      } catch (error) {
-        return res.status(400).json({
-          status: false,
-          message: "Failed to upload image",
-        });
-      }
+
+    const file = req.file;
+    if (file) {
+      const imageName = `${Date.now()}-${file.originalname}`;
+      const path = file?.path;
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+
+      existingService.imageLink = secure_url;
     }
 
     // Update the ad item

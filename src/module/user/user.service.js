@@ -1,4 +1,5 @@
 const config = require("../../config");
+const { sendImageToCloudinary } = require("../../utilts/cloudnary");
 const { createToken } = require("../../utilts/tokenGenerate");
 const User = require("./user.model");
 
@@ -34,9 +35,16 @@ const getMyProfileFromDb = async (email) => {
   return user;
 };
 
-const updateUserProfile = async (payload, email) => {
+const updateUserProfile = async (payload, email, file) => {
   const isExistingUser = await User.findOne({ email });
   if (!isExistingUser) throw new Error("User not found");
+
+  if (file) {
+    const imageName = `${Date.now()}-${file.originalname}`;
+    const path = file?.path;
+    const { secure_url } = await sendImageToCloudinary(imageName, path);
+    payload.imageLink = secure_url;
+  }
 
   const updatedUser = await User.findOneAndUpdate(
     {
