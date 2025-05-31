@@ -7,6 +7,7 @@ const globalErrorHandler = require("./middleware/globalErrorHandler");
 const cookieParser = require("cookie-parser");
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
   origin: "*",

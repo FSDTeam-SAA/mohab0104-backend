@@ -1,46 +1,40 @@
 const blogsAdmin = require("./blogsAdmin.model");
-// const User = require("../models/user.model");
-const { uploadOnCloudinary } = require("../../utilts/cloudnary");
+const {
+  uploadOnCloudinary,
+  sendImageToCloudinary,
+} = require("../../utilts/cloudnary");
 const cloudinary = require("cloudinary").v2;
 
 exports.createBlog = async (req, res) => {
   try {
     const { blogTitle, blogDescription } = req.body;
-    // const author = req.user._id; // Assuming you have user authentication middleware
+
     if (!blogTitle || !blogDescription) {
       return res.status(400).json({
         status: false,
         message: "All fields are required",
       });
     }
-    let imageLink;
-    if (req.file) {
-      try {
-        const image = await uploadOnCloudinary(
-          req.file.buffer ? req.file.buffer : "",
-          "blog"
-        );
-        imageLink = image.secure_url;
-      } catch (error) {
-        return res.status(400).json({
-          status: false,
-          message: "Failed to upload image",
-        });
-      }
+
+    const file = req.file;
+    if (file) {
+      const imageName = `blog/${Date.now()}_${file.originalname}`;
+      const path = file?.path;
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+
+      const blog = new blogsAdmin({
+        blogTitle,
+        blogDescription,
+        imageLink: secure_url,
+      });
+      await blog.save();
+
+      return res.status(201).json({
+        status: true,
+        message: "Blog created successfully",
+        data: blog,
+      });
     }
-    // Create a new ad item
-    const blog = new blogsAdmin({
-      blogTitle,
-      blogDescription,
-      imageLink,
-      // author,
-    });
-    await blog.save();
-    return res.status(201).json({
-      status: true,
-      message: "blog created successfully",
-      data: blog,
-    });
   } catch (error) {
     console.error("Error creating blog:", error);
     return res.status(500).json({
@@ -50,10 +44,6 @@ exports.createBlog = async (req, res) => {
     });
   }
 };
-
-//_______________________________________
-
-//getting all blog
 
 exports.getAllBlog = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -127,7 +117,7 @@ exports.updateBlog = async (req, res) => {
   try {
     const id = req.params.id;
     const { blogTitle, blogDescription } = req.body;
-    // const author = req.user._id; // Assuming you have user authentication middleware
+
     const existingAd = await blogsAdmin.findById(id);
     if (!existingAd) {
       return res.status(404).json({
@@ -135,24 +125,13 @@ exports.updateBlog = async (req, res) => {
         message: "blog not found",
       });
     }
-    // Validate the request body
-    if (!blogTitle || !blogDescription) {
-      return res.status(400).json({
-        status: false,
-        message: "All fields are required",
-      });
-    }
-    if (req.file) {
-      try {
-        await cloudinary.uploader.destroy(existingAd.imageLink);
-        const image = await uploadOnCloudinary(req.file.buffer, "blog");
-        existingAd.imageLink = image.secure_url;
-      } catch (error) {
-        return res.status(400).json({
-          status: false,
-          message: "Failed to upload image",
-        });
-      }
+
+    const file = req.file;
+    if (file) {
+      const imageName = `blog/${Date.now()}_${file.originalname}`;
+      const path = file?.path;
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+      existingAd.imageLink = secure_url;
     }
 
     // Update the ad item

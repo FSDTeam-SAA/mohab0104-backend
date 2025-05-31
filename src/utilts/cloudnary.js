@@ -1,25 +1,53 @@
 const cloudinary = require("cloudinary").v2;
+const config = require("../config");
+const multer = require("multer");
+const fs = require("fs");
 
-// Cloudinary setup
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: config.cloudinary.cloud_name,
+  api_key: config.cloudinary.api_key,
+  api_secret: config.cloudinary.api_secret,
 });
 
-// Upload on Cloudinary method
-exports.uploadOnCloudinary = (fileBuffer) => {
+const sendImageToCloudinary = (imageName, path) => {
   return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { resource_type: "image" },
-      (error, result) => {
+    cloudinary.uploader.upload(
+      path,
+      { public_id: imageName },
+      function (error, result) {
         if (error) {
-          console.error("Cloudinary upload error:", error);
-          return reject(error);
+          reject(error);
+        } else {
+          resolve(result);
         }
-        resolve(result);
+
+        // delete a file asynchronously
+        fs.unlink(path, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("File is deleted.");
+          }
+        });
       }
     );
-    stream.end(fileBuffer);
   });
+};
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, process.cwd() + "/uploads");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + file.originalname;
+    cb(null, file.fieldname + "-" + uniqueSuffix);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+module.exports = {
+  sendImageToCloudinary,
+  upload,
 };

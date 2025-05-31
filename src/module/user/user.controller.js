@@ -45,7 +45,7 @@ const getMyProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     const { email } = req.user;
-    const result = await userService.updateUserProfile(req.body, email);
+    const result = await userService.updateUserProfile(req.body, email, req.file);
 
     return res.status(200).json({
       success: true,
