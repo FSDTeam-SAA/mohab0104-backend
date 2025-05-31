@@ -7,6 +7,8 @@ const {
   getSingleService,
 } = require("./servicesAdmin.controller");
 const { upload } = require("../../utilts/cloudnary");
+const auth = require("../../middleware/auth");
+const USER_ROLE = require("../user/user.constant");
 const router = express.Router();
 
 router.post(

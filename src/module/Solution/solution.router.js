@@ -6,6 +6,8 @@ const {
   updateSolution,
   deleteSolution,
 } = require("./solution.controller");
+const auth = require("../../middleware/auth");
+const USER_ROLE = require("../user/user.constant");
 const router = express.Router();
 
 router.get("/get", getAllSolutions);
