@@ -8,10 +8,17 @@ const router = Router();
 
 router.post("/create", userController.createUser);
 router.get("/", userController.getAllUsers);
+
 router.get(
   "/profile",
   auth(USER_ROLE.user, USER_ROLE.admin),
   userController.getMyProfile
+);
+
+router.get(
+  "/admin-stats",
+  auth(USER_ROLE.admin),
+  userController.getAdminDashboardStats
 );
 
 router.put(

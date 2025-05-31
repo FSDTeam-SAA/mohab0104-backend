@@ -45,7 +45,11 @@ const getMyProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     const { email } = req.user;
-    const result = await userService.updateUserProfile(req.body, email, req.file);
+    const result = await userService.updateUserProfile(
+      req.body,
+      email,
+      req.file
+    );
 
     return res.status(200).json({
       success: true,
@@ -57,13 +61,26 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+const getAdminDashboardStats = async (req, res) => {
+  try {
+    const result = await userService.getAdminDashboardStatsFromDb();
 
+    return res.status(200).json({
+      success: true,
+      message: "Admin dashboard stats retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
 
 const userController = {
   createUser,
   getAllUsers,
   getMyProfile,
   updateUserProfile,
+  getAdminDashboardStats,
 };
 
 module.exports = userController;

@@ -1,6 +1,7 @@
 const config = require("../../config");
 const { sendImageToCloudinary } = require("../../utilts/cloudnary");
 const { createToken } = require("../../utilts/tokenGenerate");
+const paymentInfo = require("../payments/payment.model");
 const User = require("./user.model");
 
 const createUserInDb = async (payload) => {
@@ -56,11 +57,39 @@ const updateUserProfile = async (payload, email, file) => {
   return updatedUser;
 };
 
+const getAdminDashboardStatsFromDb = async () => {
+  const totalUsers = await User.countDocuments();
+
+  const totalBookings = await paymentInfo.countDocuments({
+    status: "success",
+  });
+
+  const totalRevenue = await paymentInfo.aggregate([
+    {
+      $match: { status: "success" },
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$amount" },
+      },
+    },
+  ]);
+
+  return {
+    totalUsers,
+    totalBookings,
+    totalRevenue: totalRevenue[0]?.totalAmount || 0,
+  };
+};
+
+
 const userService = {
   createUserInDb,
   getAllUsersFromDb,
   getMyProfileFromDb,
   updateUserProfile,
+  getAdminDashboardStatsFromDb,
 };
 
 module.exports = userService;
