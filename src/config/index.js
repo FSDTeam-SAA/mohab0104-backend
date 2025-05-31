@@ -16,4 +16,10 @@ module.exports = {
     reset_password_token_secret: process.env.RESET_PASSWORD_TOKEN_SECRET,
     reset_password_token_expires: process.env.RESET_EXPIRES_IN,
   },
+
+  cloudinary: {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  },
 };
