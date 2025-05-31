@@ -8,12 +8,12 @@ const servicesAdminSchema = new mongoose.Schema(
     serviceDescription: {
       type: String,
     },
-    imageLink: {
-      type: String,
-    },
-    views: {
+    price: {
       type: Number,
       default: 0,
+    },
+    imageLink: {
+      type: String,
     },
   },
   {

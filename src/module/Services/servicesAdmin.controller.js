@@ -8,7 +8,7 @@ const cloudinary = require("cloudinary").v2;
 
 exports.createServices = async (req, res) => {
   try {
-    const { serviceTitle, serviceDescription } = req.body;
+    const { serviceTitle, serviceDescription, price } = req.body;
     if (!serviceTitle || !serviceDescription) {
       return res.status(400).json({
         status: false,
@@ -26,6 +26,7 @@ exports.createServices = async (req, res) => {
         serviceTitle,
         serviceDescription,
         imageLink: secure_url,
+        price, // Default price to 0 if not provided
       });
 
       await service.save();
@@ -114,6 +115,8 @@ exports.getSingleService = async (req, res) => {
 };
 
 //_______________________________________
+
+//userTakenServices
 
 //updating services
 
