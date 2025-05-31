@@ -11,10 +11,6 @@ const blogsAdminSchema = new mongoose.Schema(
     imageLink: {
       type: String,
     },
-    views: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,

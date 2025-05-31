@@ -3,6 +3,13 @@ const strategy = require("./strategy.model");
 //create strategy
 exports.createStrategy = async (req, res) => {
   try {
+    const { email: userEmail } = req.user; // Assuming user email is available in req.user
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "User not found.",
+      });
+    }
     const newStrategy = await strategy.create({
       name: req.body.name,
       email: req.body.email,
@@ -61,6 +68,38 @@ exports.getAllStrategies = async (req, res) => {
     return res.status(500).json({
       status: false,
       message: "Error retrieving strategies",
+      error: error.message,
+    });
+  }
+};
+
+//get strategies by user email
+exports.getStrategiesByUserEmail = async (req, res) => {
+  try {
+    const userEmail = req.params.email;
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "Email parameter is required",
+      });
+    }
+    const strategies = await strategy.find({ email: userEmail });
+    if (strategies.length === 0) {
+      return res.status(404).json({
+        status: false,
+        message: "No strategies found for this user",
+      });
+    }
+    res.status(200).json({
+      status: true,
+      message: "Strategies retrieved successfully",
+      data: strategies,
+    });
+  } catch (error) {
+    console.error("Error retrieving strategies by user email:", error);
+    res.status(500).json({
+      status: false,
+      message: "Error retrieving strategies by user email",
       error: error.message,
     });
   }

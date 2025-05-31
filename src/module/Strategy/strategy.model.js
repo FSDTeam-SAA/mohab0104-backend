@@ -25,11 +25,6 @@ const strategySchema = new mongoose.Schema(
     answer: {
       type: String,
     },
-
-    views: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,
