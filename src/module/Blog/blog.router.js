@@ -18,6 +18,7 @@ router.post(
     req.body = JSON.parse(req.body.data);
     next();
   },
+  auth(USER_ROLE.admin),
   createBlog
 );
 router.put(
@@ -27,10 +28,11 @@ router.put(
     req.body = JSON.parse(req.body.data);
     next();
   },
+  auth(USER_ROLE.admin),
   updateBlog
 );
 
-router.delete("/:id", deleteBlog);
+router.delete("/:id", auth(USER_ROLE.admin), deleteBlog);
 
 const blogRouter = router;
 module.exports = blogRouter;

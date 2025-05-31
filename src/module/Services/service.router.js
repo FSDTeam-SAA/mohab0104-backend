@@ -19,7 +19,7 @@ router.post(
   createServices
 );
 
-router.get("/get", getAllService);
+router.get("/get", auth(USER_ROLE.admin), getAllService);
 router.get("/:id", getSingleService); // Assuming you want to get a service by ID
 router.put(
   "/:id",
@@ -28,9 +28,10 @@ router.put(
     req.body = JSON.parse(req.body.data);
     next();
   },
+  auth(USER_ROLE.admin),
   updateService
 ); // Assuming you want to update a service by ID
-router.delete("/:id", deleteService); // Assuming you want to delete a service by ID
+router.delete("/:id", auth(USER_ROLE.admin), deleteService); // Assuming you want to delete a service by ID
 
 const serviceRouter = router;
 module.exports = serviceRouter;
