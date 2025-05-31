@@ -1,9 +1,5 @@
 const blogsAdmin = require("./blogsAdmin.model");
-const {
-  uploadOnCloudinary,
-  sendImageToCloudinary,
-} = require("../../utilts/cloudnary");
-const cloudinary = require("cloudinary").v2;
+const { sendImageToCloudinary } = require("../../utilts/cloudnary");
 
 exports.createBlog = async (req, res) => {
   try {

@@ -9,8 +9,6 @@ const {
 const { upload } = require("../../utilts/cloudnary");
 const router = express.Router();
 
-router.get("/get", getAllBlog);
-router.get("/:id", getSingleBlog);
 router.post(
   "/create",
   upload.single("image"),
@@ -20,6 +18,10 @@ router.post(
   },
   createBlog
 );
+
+router.get("/get", getAllBlog);
+router.get("/:id", getSingleBlog);
+
 router.put(
   "/:id",
   upload.single("image"),
