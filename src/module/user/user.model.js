@@ -26,6 +26,10 @@ const userModel = new Schema(
       type: String,
       required: [true, "Password is required"],
     },
+    imageLink: {
+      type: String,
+      default: "",
+    },
     otp: { type: String, default: null },
     otpExpires: { type: Date, default: null },
     role: {
