@@ -16,7 +16,7 @@ router.post("/create-payment", createPayment);
 // Capture Payment
 router.post("/capture-payment", capturePayment);
 router.get("/my-payments", auth(USER_ROLE.user), getMyPayments);
-router.get("/", getAllPayments);
+router.get("/", auth(USER_ROLE.admin), getAllPayments);
 
 const paymentRouter = router;
 module.exports = paymentRouter;
