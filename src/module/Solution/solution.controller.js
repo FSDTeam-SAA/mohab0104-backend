@@ -2,6 +2,14 @@ const solutions = require("./solutions.model");
 
 exports.createSolution = async (req, res) => {
   try {
+    const { email: userEmail } = req.user;
+
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "User not found",
+      });
+    }
     // Create a new solution
     const newSolution = await solutions.create({
       solutionName: req.body.solutionName,
@@ -66,6 +74,14 @@ exports.getAllSolutions = async (req, res) => {
 // Update a solution by ID
 exports.updateSolution = async (req, res) => {
   try {
+    const { email: userEmail } = req.user;
+
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "User not found",
+      });
+    }
     const solutionId = req.params.id;
     const updatedSolution = await solutions.findByIdAndUpdate(
       solutionId,
@@ -98,6 +114,14 @@ exports.updateSolution = async (req, res) => {
 
 exports.deleteSolution = async (req, res) => {
   try {
+    const { email: userEmail } = req.user;
+
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "User not found",
+      });
+    }
     const solutionId = req.params.id;
     const deletedSolution = await solutions.findByIdAndDelete(solutionId);
 

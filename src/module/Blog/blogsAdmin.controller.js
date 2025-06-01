@@ -3,6 +3,13 @@ const { sendImageToCloudinary } = require("../../utilts/cloudnary");
 
 exports.createBlog = async (req, res) => {
   try {
+    const { email: userEmail } = req.user;
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "User not found",
+      });
+    }
     const { blogTitle, blogDescription } = req.body;
 
     if (!blogTitle || !blogDescription) {
@@ -111,6 +118,13 @@ exports.getSingleBlog = async (req, res) => {
 
 exports.updateBlog = async (req, res) => {
   try {
+    const { email: userEmail } = req.user;
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "User not found",
+      });
+    }
     const id = req.params.id;
     const { blogTitle, blogDescription } = req.body;
 
@@ -157,6 +171,13 @@ exports.updateBlog = async (req, res) => {
 
 exports.deleteBlog = async (req, res) => {
   try {
+    const { email: userEmail } = req.user;
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "User not found",
+      });
+    }
     const id = req.params.id;
     const blog = await blogsAdmin.findByIdAndDelete(id);
     if (!blog) {

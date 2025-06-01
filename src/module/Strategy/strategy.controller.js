@@ -36,6 +36,14 @@ exports.createStrategy = async (req, res) => {
 //get all strategies
 exports.getAllStrategies = async (req, res) => {
   try {
+    const { email: userEmail } = req.user;
+
+    if (!userEmail) {
+      return res.status(400).json({
+        status: false,
+        message: "User not found",
+      });
+    }
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;

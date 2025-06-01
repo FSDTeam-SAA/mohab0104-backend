@@ -7,6 +7,8 @@ const {
   getSingleBlog,
 } = require("./blogsAdmin.controller");
 const { upload } = require("../../utilts/cloudnary");
+const auth = require("../../middleware/auth");
+const USER_ROLE = require("../user/user.constant");
 const router = express.Router();
 
 router.post(
@@ -16,6 +18,7 @@ router.post(
     req.body = JSON.parse(req.body.data);
     next();
   },
+  auth(USER_ROLE.admin),
   createBlog
 );
 
@@ -29,10 +32,11 @@ router.put(
     req.body = JSON.parse(req.body.data);
     next();
   },
+  auth(USER_ROLE.admin),
   updateBlog
 );
 
-router.delete("/:id", deleteBlog);
+router.delete("/:id", auth(USER_ROLE.admin), deleteBlog);
 
 const blogRouter = router;
 module.exports = blogRouter;
