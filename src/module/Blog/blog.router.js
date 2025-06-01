@@ -11,8 +11,6 @@ const auth = require("../../middleware/auth");
 const USER_ROLE = require("../user/user.constant");
 const router = express.Router();
 
-router.get("/get", getAllBlog);
-router.get("/:id", getSingleBlog);
 router.post(
   "/create",
   upload.single("image"),
@@ -23,6 +21,10 @@ router.post(
   auth(USER_ROLE.admin),
   createBlog
 );
+
+router.get("/get", getAllBlog);
+router.get("/:id", getSingleBlog);
+
 router.put(
   "/:id",
   upload.single("image"),
