@@ -84,11 +84,11 @@ exports.getAllStrategies = async (req, res) => {
 //get strategies by user email
 exports.getStrategiesByUserEmail = async (req, res) => {
   try {
-    const userEmail = req.params.email;
+    const { email: userEmail } = req.user;
     if (!userEmail) {
       return res.status(400).json({
         status: false,
-        message: "Email parameter is required",
+        message: "User not found",
       });
     }
     const strategies = await strategy.find({ email: userEmail });
@@ -97,13 +97,14 @@ exports.getStrategiesByUserEmail = async (req, res) => {
         status: false,
         message: "No strategies found for this user",
       });
-    }
+    } 
     res.status(200).json({
       status: true,
       message: "Strategies retrieved successfully",
       data: strategies,
     });
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Error retrieving strategies by user email:", error);
     res.status(500).json({
       status: false,
