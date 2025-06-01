@@ -21,7 +21,7 @@ router.post(
   createServices
 );
 
-router.get("/get", auth(USER_ROLE.admin), getAllService);
+router.get("/get", getAllService);
 router.get("/:id", getSingleService); // Assuming you want to get a service by ID
 router.put(
   "/:id",
