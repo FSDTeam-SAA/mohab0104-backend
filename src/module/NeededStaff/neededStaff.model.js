@@ -9,7 +9,7 @@ const neededStaffSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    conpanyName: {
+    companyName: {
       type: String,
       required: true,
     },
