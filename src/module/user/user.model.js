@@ -17,6 +17,9 @@ const userModel = new Schema(
       required: [true, "Email is required"],
       unique: true,
     },
+    companyName: {
+      type: String,
+    },
     phone: {
       type: String,
       required: [true, "Phone is required"],
