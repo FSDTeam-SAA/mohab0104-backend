@@ -1,5 +1,12 @@
 const express = require("express");
-const { getNeededStaffByUser, createNeededStaff, getAllNeededStaff, getSingleNeededStaff, updateNeededStaff, deleteNeededStaff } = require("./neededStaff.controller");
+const {
+  getNeededStaffByUser,
+  createNeededStaff,
+  getAllNeededStaff,
+  getSingleNeededStaff,
+  updateNeededStaff,
+  deleteNeededStaff,
+} = require("./neededStaff.controller");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const USER_ROLE = require("../user/user.constant");
