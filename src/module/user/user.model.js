@@ -53,10 +53,6 @@ const userModel = new Schema(
       type: String,
       default: "",
     },
-    taxId: {
-      type: String,
-      default: "",
-    },
   },
   { timestamps: true, versionKey: false }
 );
