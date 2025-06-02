@@ -8,33 +8,70 @@ const bcrypt = require("bcryptjs");
 
 const loginUser = async (payload) => {
   console.log("Login Payload:", payload);
-  const isExistingUser = await User.findOne({
-    email: payload.email,
-  });
-  if (!isExistingUser) throw new Error("User not found");
+//   const isExistingUser = await User.findOne({
+//     email: payload.email,
+//   });
+//   if (!isExistingUser) throw new Error("User not found");
 
-  const isPasswordMatched = await bcrypt.compare(
-    payload.password,
-    isExistingUser.password
-  );
-  if (!isPasswordMatched) throw new Error("Invalid password");
+//   const isPasswordMatched = await bcrypt.compare(
+//     payload.password,
+//     isExistingUser.password
+//   );
+//   if (!isPasswordMatched) throw new Error("Invalid password");
 
-  const JwtToken = {
-    userId: isExistingUser._id,
-    email: isExistingUser.email,
-    role: isExistingUser.role,
-  };
+//   const JwtToken = {
+//     userId: isExistingUser._id,
+//     email: isExistingUser.email,
+//     role: isExistingUser.role,
+//   };
 
-  const accessToken = createToken(
-    JwtToken,
-    config.JWT_SECRET,
-    config.JWT_EXPIRES_IN
-  );
+//   const accessToken = createToken(
+//     JwtToken,
+//     config.JWT_SECRET,
+//     config.JWT_EXPIRES_IN
+//   );
 
-  return {
-    accessToken,
-  };
+//   return {
+//     accessToken,
+//     isExistingUser
+//   }
+// };
+
+const isExistingUser = await User.findOne({
+  email: payload.email,
+}); 
+
+if (!isExistingUser) throw new Error("User not found");
+
+// Password check
+const isPasswordMatched = await bcrypt.compare(
+  payload.password,
+  isExistingUser.password
+);
+if (!isPasswordMatched) throw new Error("Invalid password");
+
+// Convert to plain object so deletion works!
+const userObj = isExistingUser.toObject();
+delete userObj.password;
+
+const JwtToken = {
+  userId: isExistingUser._id,
+  email: isExistingUser.email,
+  role: isExistingUser.role,
 };
+
+const accessToken = createToken(
+  JwtToken,
+  config.JWT_SECRET,
+  config.JWT_EXPIRES_IN
+);
+
+return {
+  accessToken,
+  isExistingUser: userObj, // send back the plain object without password
+};
+};
+
 
 const forgotPassword = async (email) => {
   if (!email) throw new Error("Email is required");
