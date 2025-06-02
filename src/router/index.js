@@ -8,6 +8,7 @@ const solutionRouter = require("../module/Solution/solution.router");
 const strategyRouter = require("../module/Strategy/strategy.router");
 const paymentRouter = require("../module/payments/payment.router");
 const sendMessageRouter = require("../module/contract/contract.router");
+const neededStaffRouter = require("../module/NeededStaff/neededStaff.router");
 const router = Router();
 
 const moduleRouter = [
@@ -47,6 +48,10 @@ const moduleRouter = [
   {
     path: '/contact',
     router: sendMessageRouter,
+  },
+  {
+    path: '/needed-staff',
+    router: neededStaffRouter
   }
 ]
 
