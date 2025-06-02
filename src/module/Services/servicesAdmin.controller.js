@@ -4,16 +4,19 @@ const {
   uploadOnCloudinary,
   sendImageToCloudinary,
 } = require("../../utilts/cloudnary");
+const User = require("../user/user.model");
 const cloudinary = require("cloudinary").v2;
 
 exports.createServices = async (req, res) => {
   try {
     const { email: userEmail } = req.user;
+    console.log("User Email:", userEmail);
 
-    if (!userEmail) {
+    const isExist = await User.findOne({ email: userEmail });
+    if (!isExist) {
       return res.status(400).json({
         status: false,
-        message: "User not found",
+        message: "User not found.",
       });
     }
     const { serviceTitle, serviceDescription, price } = req.body;
