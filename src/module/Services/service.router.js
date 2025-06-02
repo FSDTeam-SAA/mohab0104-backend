@@ -18,6 +18,7 @@ router.post(
     req.body = JSON.parse(req.body.data);
     next();
   },
+  auth(USER_ROLE.admin),
   createServices
 );
 
