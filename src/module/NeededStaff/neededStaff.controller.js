@@ -10,15 +10,15 @@ exports.createNeededStaff = async (req, res) => {
                 message: "User not found.",
             });
         }
-        const { staffName, staffRole, staffDescription } = req.body;
+        const { staffName, companyName, staffDescription } = req.body;
         // Validate required fields
-        if (!staffName || !staffRole || !staffDescription) {
+        if (!staffName || !companyName || !staffDescription) {
             return res.status(400).json({ message: 'All fields are required' });
         }
         const newStaff = new NeededStaff({
             firstName: staffName.split(' ')[0], // Assuming staffName is a full name
             lastName: staffName.split(' ')[1] || '', // Handling case where only one name is provided    
-            conpanyName: staffRole,
+            companyName,
             staffDescription
         });
 
@@ -99,7 +99,7 @@ exports.getSingleNeededStaff = async (req, res) => {
 exports.updateNeededStaff = async (req, res) => {
     try {
         const { id } = req.params;
-        const { staffName, staffRole, staffDescription , answer} = req.body;
+        const { staffName, companyName, staffDescription , answer} = req.body;
 
         // Validate required fields
         if (!staffName || !staffRole || !staffDescription) {
@@ -111,7 +111,7 @@ exports.updateNeededStaff = async (req, res) => {
             {
                 firstName: staffName.split(' ')[0],
                 lastName: staffName.split(' ')[1] || '',
-                conpanyName: staffRole,
+                companyName,
                 staffDescription,
                 answer, // Assuming 'answer' is part of the request body
             },
