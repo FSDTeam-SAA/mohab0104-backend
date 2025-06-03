@@ -9,24 +9,32 @@ const bcrypt = require("bcryptjs");
 const loginUser = async (payload) => {
   const isExistingUser = await User.findOne({
     email: payload.email,
-  });
+  }).select("+password");
 
-  if (!isExistingUser) throw new Error("User not found");
+  if (!isExistingUser) {
+    throw new Error("User not found");
+  }
 
   if (!isExistingUser.isVerified) {
     throw new Error("Please verify your email");
   }
 
-  // Password check
+  console.log("Plain password:", payload.password);
+  console.log("Hashed password in DB:", isExistingUser.password);
+
   const isPasswordMatched = await bcrypt.compare(
     payload.password,
     isExistingUser.password
   );
-  if (!isPasswordMatched) throw new Error("Invalid password");
 
-  // Convert to plain object so deletion works!
+  if (!isPasswordMatched) {
+    throw new Error("Invalid password");
+  }
+
   const userObj = isExistingUser.toObject();
   delete userObj.password;
+  delete userObj.otp;
+  delete userObj.otpExpires;
 
   const JwtToken = {
     userId: isExistingUser._id,
@@ -42,9 +50,10 @@ const loginUser = async (payload) => {
 
   return {
     accessToken,
-    isExistingUser: userObj, // send back the plain object without password
+    user: userObj,
   };
 };
+
 
 const forgotPassword = async (email) => {
   if (!email) throw new Error("Email is required");
