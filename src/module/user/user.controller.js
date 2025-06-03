@@ -6,10 +6,41 @@ const createUser = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "User created successfully",
+      message: "User created successfully, please verify your email",
       data: result,
     });
   } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const verifyEmail = async (req, res) => {
+  try {
+    const { email } = req.user;
+    const result = await userService.verifyUserEmail(req.body, email);
+    return res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error in verifyEmail:", error);
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const resendOtpCode = async (req, res) => {
+  try {
+    const { email } = req.user;
+    const result = await userService.resendOtpCode(req.body, email);
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP resent successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error in resendOtpCode:", error);
     return res.status(400).json({ success: false, message: error.message });
   }
 };
@@ -77,6 +108,8 @@ const getAdminDashboardStats = async (req, res) => {
 
 const userController = {
   createUser,
+  verifyEmail,
+  resendOtpCode,
   getAllUsers,
   getMyProfile,
   updateUserProfile,

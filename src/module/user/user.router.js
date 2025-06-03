@@ -7,6 +7,18 @@ const { upload } = require("../../utilts/cloudnary");
 const router = Router();
 
 router.post("/create", userController.createUser);
+router.post(
+  "/verify-email",
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  userController.verifyEmail
+);
+
+router.post(
+  "/resend-otp",
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  userController.resendOtpCode
+);
+
 router.get("/", userController.getAllUsers);
 
 router.get(

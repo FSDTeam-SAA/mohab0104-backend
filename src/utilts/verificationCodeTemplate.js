@@ -4,7 +4,6 @@ const verificationCodeTemplate = (code) => `
   <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 30px; border-radius: 12px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
     <header style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #eee;">
       <h1 style="color: #004080; margin: 0;">${companyName}</h1>
-      <p style="font-size: 14px; color: #666;">Your trusted platform to report and resolve company service issues</p>
     </header>
     <main style="padding: 25px 0;">
       <p style="font-size: 16px; color: #333;">Hi there,</p>
