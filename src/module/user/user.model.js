@@ -28,6 +28,7 @@ const userModel = new Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
+      select: false, // Exclude password from queries by default
     },
     imageLink: {
       type: String,
