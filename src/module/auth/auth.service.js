@@ -60,11 +60,25 @@ const forgotPassword = async (email) => {
   isExistingUser.otpExpires = otpExpires;
   await isExistingUser.save();
 
-  await sendEmail({
+  const result = await sendEmail({
     to: email,
     subject: `${companyName} - Password Reset OTP`,
     html: verificationCodeTemplate(otp),
   });
+
+  const JwtToken = {
+    userId: isExistingUser._id,
+    email: isExistingUser.email,
+    role: isExistingUser.role,
+  };
+
+  const accessToken = createToken(
+    JwtToken,
+    config.JWT_SECRET,
+    config.JWT_EXPIRES_IN
+  );
+
+  return { accessToken };
 };
 
 const verifyToken = async (otp, email) => {
