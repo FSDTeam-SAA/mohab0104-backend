@@ -75,7 +75,6 @@ exports.getAllNeededStaff = async (req, res) => {
 exports.getNeededStaffByUser = async (req, res) => {
   try {
     const { email: userEmail } = req.user; // Assuming user email is available in req.user
-    console.log("userEmail", req.user);
     const isExist = await User.findOne({ email: userEmail });
     if (!isExist) {
       return res.status(400).json({

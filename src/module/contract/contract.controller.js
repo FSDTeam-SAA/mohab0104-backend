@@ -10,7 +10,6 @@ const sendMessage = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("Error in sendMessage:", error);
     return res.status(400).json({ success: false, message: error.message });
   }
 }; 
