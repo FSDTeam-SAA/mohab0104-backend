@@ -24,15 +24,13 @@ const verifyEmail = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    
     return res.status(400).json({ success: false, message: error.message });
   }
 };
 
 const resendOtpCode = async (req, res) => {
   try {
-    const { email } = req.user;
-    const result = await userService.resendOtpCode(req.body, email);
+    const result = await userService.resendOtpCode(req.user);
 
     return res.status(200).json({
       success: true,
@@ -40,7 +38,6 @@ const resendOtpCode = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    
     return res.status(400).json({ success: false, message: error.message });
   }
 };

@@ -1,5 +1,3 @@
-
-
 require("dotenv").config();
 
 module.exports = {
@@ -25,4 +23,6 @@ module.exports = {
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
   },
+
+  otp_secret: process.env.OTP_SECRET,
 };
