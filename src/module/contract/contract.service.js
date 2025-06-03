@@ -4,7 +4,6 @@ const sendMessageTemplate = require("../../utilts/sendMessageTemplate");
 
 const sendMessage = async (payload) => {
   const { email, subject, message } = payload;
-//   console.log("sendMessage payload:", payload);
   if (!email || !subject || !message) {
     throw new Error("Please fill all the fields");
   }

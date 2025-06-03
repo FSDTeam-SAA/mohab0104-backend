@@ -39,7 +39,6 @@ exports.createBlog = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error creating blog:", error);
     return res.status(500).json({
       status: false,
       message: "Error creating blog",
@@ -103,7 +102,6 @@ exports.getSingleBlog = async (req, res) => {
       data: blog,
     });
   } catch (error) {
-    console.error("Error fetching blog:", error);
     return res.status(500).json({
       status: false,
       message: "Error fetching blog",
@@ -156,7 +154,6 @@ exports.updateBlog = async (req, res) => {
       data: existingAd,
     });
   } catch (error) {
-    console.error("Error updating blog:", error);
     return res.status(500).json({
       status: false,
       message: "Error updating blog",
@@ -193,7 +190,6 @@ exports.deleteBlog = async (req, res) => {
       data: "",
     });
   } catch (error) {
-    console.error("Error deleting blog:", error);
     return res.status(500).json({
       status: false,
       message: "Error deleting blog",

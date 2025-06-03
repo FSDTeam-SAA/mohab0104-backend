@@ -24,7 +24,7 @@ const verifyEmail = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("Error in verifyEmail:", error);
+    
     return res.status(400).json({ success: false, message: error.message });
   }
 };
@@ -40,7 +40,7 @@ const resendOtpCode = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("Error in resendOtpCode:", error);
+    
     return res.status(400).json({ success: false, message: error.message });
   }
 };

@@ -48,7 +48,7 @@ exports.createPayment = async (req, res) => {
       message: "Payment created. Capture the payment to complete.",
     });
   } catch (error) {
-    console.error("Error creating PayPal order:", error);
+ 
     res.status(500).send("Internal server error.");
   }
 };
@@ -93,7 +93,7 @@ exports.capturePayment = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error capturing payment:", error);
+    
     res.status(500).send("Internal server error.");
   }
 };
@@ -119,7 +119,7 @@ exports.getMyPayments = async (req, res) => {
       payments,
     });
   } catch (error) {
-    console.error("Error fetching payments:", error);
+    
     return res.status(500).json({
       error: "Internal server error.",
     });
@@ -139,7 +139,7 @@ exports.getAllPayments = async (req, res) => {
       payments,
     });
   } catch (error) {
-    console.error("Error fetching all payments:", error);
+    
     return res.status(500).json({
       error: "Internal server error.",
     });
