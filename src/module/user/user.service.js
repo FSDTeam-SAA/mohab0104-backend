@@ -9,7 +9,6 @@ const bcrypt = require("bcryptjs");
 
 const createUserInDb = async (payload) => {
   const existingUser = await User.findOne({ email: payload.email });
-
   if (existingUser && existingUser.isVerified) {
     throw new Error("User already exists and is verified");
   }
@@ -77,23 +76,20 @@ const verifyUserEmail = async (payload, email) => {
   const isOtpMatched = await bcrypt.compare(otp.toString(), existingUser.otp);
   if (!isOtpMatched) throw new Error("Invalid OTP");
 
-  // Clear OTP and OTP expiration after successful verification
-  existingUser.otp = undefined;
-  existingUser.otpExpires = undefined;
-  await existingUser.save();
-
-  await User.findOneAndUpdate(
+  const result = await User.findOneAndUpdate(
     { email },
-    { isVerified: true, otp: undefined, otpExpires: undefined },
+    {
+      isVerified: true,
+      $unset: { otp: "", otpExpires: "" },
+    },
     { new: true }
-  );
-  return {
-    success: true,
-  };
+  ).select("-password -otp -otpExpires");
+  return result;
 };
 
-const resendOtpCode = async (payload, email) => {
+const resendOtpCode = async ({ email }) => {
   const existingUser = await User.findOne({ email });
+  console.log(existingUser);
   if (!existingUser) throw new Error("User not found");
 
   if (existingUser.isVerified) {
@@ -104,18 +100,21 @@ const resendOtpCode = async (payload, email) => {
   const hashedOtp = await bcrypt.hash(otp, 10);
   const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
-  existingUser.otp = hashedOtp;
-  existingUser.otpExpires = otpExpires;
-  await existingUser.save();
+  const result = await User.findOneAndUpdate(
+    { email },
+    {
+      otp: hashedOtp,
+      otpExpires,
+    },
+    { new: true }
+  ).select("-password -otp -otpExpires");
 
   await sendEmail({
     to: existingUser.email,
     subject: "Verify your email",
     html: verificationCodeTemplate(otp),
   });
-  return {
-    success: true,
-  };
+  return result;
 };
 
 const getAllUsersFromDb = async () => {
