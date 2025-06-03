@@ -60,7 +60,7 @@ const forgotPassword = async (email) => {
   isExistingUser.otpExpires = otpExpires;
   await isExistingUser.save();
 
-  const result = await sendEmail({
+  await sendEmail({
     to: email,
     subject: `${companyName} - Password Reset OTP`,
     html: verificationCodeTemplate(otp),
