@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/create-payment", createPayment);
 
 // Capture Payment
-// router.post("/confirm-payment", confirmPayment)
+router.post("/confirm-payment", confirmPayment)
 
 router.get("/my-payments", auth(USER_ROLE.user), getMyPayments);
 router.get("/", auth(USER_ROLE.admin), getAllPayments);
