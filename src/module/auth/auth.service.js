@@ -157,14 +157,16 @@ const changePassword = async (payload, email) => {
   if (!currentPassword || !newPassword) {
     throw new Error("Current and new passwords are required");
   }
+  console.log("first", email)
 
   const isExistingUser = await User.findOne({ email });
+  console.log("first", isExistingUser)
   if (!isExistingUser) throw new Error("User not found");
 
   const isPasswordMatched = await bcrypt.compare(
     currentPassword,
     isExistingUser.password
-  );
+  )
   if (!isPasswordMatched) throw new Error("Invalid current password");
 
   const hashedPassword = await bcrypt.hash(
