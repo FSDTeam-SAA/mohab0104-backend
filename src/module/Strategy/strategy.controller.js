@@ -85,35 +85,58 @@ exports.getAllStrategies = async (req, res) => {
 //get strategies by user email
 exports.getStrategiesByUserEmail = async (req, res) => {
   try {
-    const { email: userEmail } = req.user; // Assuming user email is available in req.user
-    const isExist = await User.findOne({ email: userEmail });
+    const { email: userEmail } = req.user
+
+    const isExist = await User.findOne({ email: userEmail })
     if (!isExist) {
       return res.status(400).json({
         status: false,
-        message: "User not found.",
-      });
+        message: 'User not found.',
+      })
     }
-    const strategies = await strategy.find({ email: userEmail });
+
+    // Pagination params with defaults
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
+
+    const [strategies, totalItems] = await Promise.all([
+      strategy
+        .find({ email: userEmail })
+        .sort({ createdAt: -1 }) 
+        .skip(skip)
+        .limit(limit),
+      strategy.countDocuments({ email: userEmail }),
+    ])
+
     if (strategies.length === 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         status: false,
-        message: "No strategies found for this user",
-      });
+        message: 'No strategies found for this user',
+      })
     }
+
+    const totalPages = Math.ceil(totalItems / limit)
+
     res.status(200).json({
       status: true,
-      message: "Strategies retrieved successfully",
+      message: 'Strategies retrieved successfully',
       data: strategies,
-    });
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        itemsPerPage: limit,
+      },
+    })
   } catch (error) {
-    
     res.status(500).json({
       status: false,
-      message: "Error retrieving strategies by user email",
+      message: 'Error retrieving strategies by user email',
       error: error.message,
-    });
+    })
   }
-};
+}
 
 //get strategy by id
 exports.getStrategyById = async (req, res) => {

@@ -189,31 +189,49 @@ exports.confirmPayment = async (req, res) => {
 
 exports.getMyPayments = async (req, res) => {
   try {
-    const { email } = req.user;
-    const user = await User.findOne({ email });
+    const { email } = req.user
+    const user = await User.findOne({ email })
     if (!user) {
       return res.status(404).json({
-        error: "User not found.",
-      });
+        error: 'User not found.',
+      })
     }
 
-    const payments = await PaymentInfo.find({ userId: user._id })
-      .populate("userId", "name email")
-      .populate("serviceId")
-      .sort({ createdAt: -1 });
+    // Pagination params with defaults
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
+
+    const [payments, totalItems] = await Promise.all([
+      PaymentInfo.find({ userId: user._id })
+        .populate('userId', 'name email')
+        .populate('serviceId')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      PaymentInfo.countDocuments({ userId: user._id }),
+    ])
+
+    const totalPages = Math.ceil(totalItems / limit)
 
     return res.status(200).json({
       success: true,
-      message: "Your payments fetched successfully.",
-      payments,
-    });
+      message: 'Your payments fetched successfully.',
+      data: payments,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        itemsPerPage: limit,
+      },
+    })
   } catch (error) {
-    
     return res.status(500).json({
-      error: "Internal server error.",
-    });
+      error: 'Internal server error.',
+    })
   }
-};
+}
+
 
 exports.getAllPayments = async (req, res) => {
   try {
