@@ -4,16 +4,19 @@ const {
   uploadOnCloudinary,
   sendImageToCloudinary,
 } = require("../../utilts/cloudnary");
+const User = require("../user/user.model");
 const cloudinary = require("cloudinary").v2;
 
 exports.createServices = async (req, res) => {
   try {
     const { email: userEmail } = req.user;
+    
 
-    if (!userEmail) {
+    const isExist = await User.findOne({ email: userEmail });
+    if (!isExist) {
       return res.status(400).json({
         status: false,
-        message: "User not found",
+        message: "User not found.",
       });
     }
     const { serviceTitle, serviceDescription, price } = req.body;
@@ -45,7 +48,7 @@ exports.createServices = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error creating service:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error creating service",
@@ -97,7 +100,7 @@ exports.getAllService = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching services:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Internal server error",
@@ -126,7 +129,7 @@ exports.getSingleService = async (req, res) => {
       data: service,
     });
   } catch (error) {
-    console.error("Error fetching Services:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error fetching Services",
@@ -182,7 +185,7 @@ exports.updateService = async (req, res) => {
       data: existingService,
     });
   } catch (error) {
-    console.error("Error updating service:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error updating service",
@@ -219,7 +222,7 @@ exports.deleteService = async (req, res) => {
       data: "",
     });
   } catch (error) {
-    console.error("Error deleting service:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error deleting service",

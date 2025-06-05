@@ -208,7 +208,7 @@ exports.getMyPayments = async (req, res) => {
       payments,
     });
   } catch (error) {
-    console.error("Error fetching payments:", error);
+    
     return res.status(500).json({
       error: "Internal server error.",
     });
@@ -228,7 +228,7 @@ exports.getAllPayments = async (req, res) => {
       payments,
     });
   } catch (error) {
-    console.error("Error fetching all payments:", error);
+    
     return res.status(500).json({
       error: "Internal server error.",
     });

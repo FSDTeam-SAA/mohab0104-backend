@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const neededStaffSchema = new mongoose.Schema(
   {
     firstName: {
@@ -8,6 +8,12 @@ const neededStaffSchema = new mongoose.Schema(
     lastName: {
       type: String,
       required: true,
+    },
+    businessEmail: {
+      type: String,
+      required: true,
+
+      match: /.+\@.+\..+/,
     },
     companyName: {
       type: String,
@@ -25,5 +31,5 @@ const neededStaffSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-const NeededStaff = mongoose.model('NeededStaff', neededStaffSchema);
+const NeededStaff = mongoose.model("NeededStaff", neededStaffSchema);
 module.exports = NeededStaff;

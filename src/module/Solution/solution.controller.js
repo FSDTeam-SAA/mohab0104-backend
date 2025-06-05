@@ -22,7 +22,7 @@ exports.createSolution = async (req, res) => {
       data: newSolution,
     });
   } catch (error) {
-    console.error("Error creating solution:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error creating solution",
@@ -63,7 +63,7 @@ exports.getAllSolutions = async (req, res) => {
       currentPage: page,
     });
   } catch (error) {
-    console.error("Error retrieving solutions:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error retrieving solutions",
@@ -102,7 +102,7 @@ exports.updateSolution = async (req, res) => {
       data: updatedSolution,
     });
   } catch (error) {
-    console.error("Error updating solution:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error updating solution",
@@ -138,7 +138,7 @@ exports.deleteSolution = async (req, res) => {
       data: deletedSolution,
     });
   } catch (error) {
-    console.error("Error deleting solution:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error deleting solution",
@@ -165,7 +165,7 @@ exports.getSolutionById = async (req, res) => {
       data: solution,
     });
   } catch (error) {
-    console.error("Error retrieving solution:", error);
+    
     return res.status(500).json({
       status: false,
       message: "Error retrieving solution",

@@ -28,6 +28,7 @@ const userModel = new Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
+      select: false, // Exclude password from queries by default
     },
     imageLink: {
       type: String,
@@ -55,6 +56,10 @@ const userModel = new Schema(
     postalCode: {
       type: String,
       default: "",
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true, versionKey: false }

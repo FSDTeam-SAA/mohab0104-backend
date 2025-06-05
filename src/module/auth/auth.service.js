@@ -7,69 +7,51 @@ const User = require("../user/user.model");
 const bcrypt = require("bcryptjs");
 
 const loginUser = async (payload) => {
-  console.log("Login Payload:", payload);
-//   const isExistingUser = await User.findOne({
-//     email: payload.email,
-//   });
-//   if (!isExistingUser) throw new Error("User not found");
+  const isExistingUser = await User.findOne({
+    email: payload.email,
+  }).select("+password");
 
-//   const isPasswordMatched = await bcrypt.compare(
-//     payload.password,
-//     isExistingUser.password
-//   );
-//   if (!isPasswordMatched) throw new Error("Invalid password");
+  if (!isExistingUser) {
+    throw new Error("User not found");
+  }
 
-//   const JwtToken = {
-//     userId: isExistingUser._id,
-//     email: isExistingUser.email,
-//     role: isExistingUser.role,
-//   };
+  if (!isExistingUser.isVerified) {
+    throw new Error("Please verify your email");
+  }
 
-//   const accessToken = createToken(
-//     JwtToken,
-//     config.JWT_SECRET,
-//     config.JWT_EXPIRES_IN
-//   );
+  console.log("Plain password:", payload.password);
+  console.log("Hashed password in DB:", isExistingUser.password);
 
-//   return {
-//     accessToken,
-//     isExistingUser
-//   }
-// };
+  const isPasswordMatched = await bcrypt.compare(
+    payload.password,
+    isExistingUser.password
+  );
 
-const isExistingUser = await User.findOne({
-  email: payload.email,
-}); 
+  if (!isPasswordMatched) {
+    throw new Error("Invalid password");
+  }
 
-if (!isExistingUser) throw new Error("User not found");
+  const userObj = isExistingUser.toObject();
+  delete userObj.password;
+  delete userObj.otp;
+  delete userObj.otpExpires;
 
-// Password check
-const isPasswordMatched = await bcrypt.compare(
-  payload.password,
-  isExistingUser.password
-);
-if (!isPasswordMatched) throw new Error("Invalid password");
+  const JwtToken = {
+    userId: isExistingUser._id,
+    email: isExistingUser.email,
+    role: isExistingUser.role,
+  };
 
-// Convert to plain object so deletion works!
-const userObj = isExistingUser.toObject();
-delete userObj.password;
+  const accessToken = createToken(
+    JwtToken,
+    config.JWT_SECRET,
+    config.JWT_EXPIRES_IN
+  );
 
-const JwtToken = {
-  userId: isExistingUser._id,
-  email: isExistingUser.email,
-  role: isExistingUser.role,
-};
-
-const accessToken = createToken(
-  JwtToken,
-  config.JWT_SECRET,
-  config.JWT_EXPIRES_IN
-);
-
-return {
-  accessToken,
-  isExistingUser: userObj, // send back the plain object without password
-};
+  return {
+    accessToken,
+    user: userObj,
+  };
 };
 
 
@@ -92,10 +74,24 @@ const forgotPassword = async (email) => {
     subject: `${companyName} - Password Reset OTP`,
     html: verificationCodeTemplate(otp),
   });
+
+  const JwtToken = {
+    userId: isExistingUser._id,
+    email: isExistingUser.email,
+    role: isExistingUser.role,
+  };
+
+  const accessToken = createToken(
+    JwtToken,
+    config.JWT_SECRET,
+    config.JWT_EXPIRES_IN
+  );
+
+  return { accessToken };
 };
 
 const verifyToken = async (otp, email) => {
-  if (!otp) throw new Error("OTP and email are required");
+  if (!otp) throw new Error("OTP are required");
 
   const isExistingUser = await User.findOne({ email });
   if (!isExistingUser) throw new Error("User not found");
