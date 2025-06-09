@@ -235,20 +235,37 @@ exports.getMyPayments = async (req, res) => {
 
 exports.getAllPayments = async (req, res) => {
   try {
-    const payments = await PaymentInfo.find({})
-      .populate("userId", "name email")
-      .populate("serviceId")
-      .sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 1 
+    const limit = parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
+
+    const [totalItems, payments] = await Promise.all([
+      PaymentInfo.countDocuments({}),
+      PaymentInfo.find({})
+        .populate('userId', 'name email')
+        .populate('serviceId')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+    ])
+
+    const totalPages = Math.ceil(totalItems / limit)
 
     return res.status(200).json({
       success: true,
-      message: "All payments fetched successfully.",
-      payments,
-    });
+      message: 'All payments fetched successfully.',
+      data: payments,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        itemsPerPage: limit,
+      },
+    })
   } catch (error) {
-    
     return res.status(500).json({
-      error: "Internal server error.",
-    });
+      error: 'Internal server error.',
+    })
   }
-};
+}
+
