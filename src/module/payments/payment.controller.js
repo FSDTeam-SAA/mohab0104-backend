@@ -242,7 +242,7 @@ exports.getAllPayments = async (req, res) => {
     const [totalItems, payments] = await Promise.all([
       PaymentInfo.countDocuments({}),
       PaymentInfo.find({})
-        .populate('userId', 'name email')
+        .populate('userId', 'firstName lastName email')
         .populate('serviceId')
         .sort({ createdAt: -1 })
         .skip(skip)
