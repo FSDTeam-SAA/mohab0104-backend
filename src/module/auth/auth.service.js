@@ -19,8 +19,8 @@ const loginUser = async (payload) => {
     throw new Error("Please verify your email");
   }
 
-  console.log("Plain password:", payload.password);
-  console.log("Hashed password in DB:", isExistingUser.password);
+  // console.log("Plain password:", payload.password);
+  // console.log("Hashed password in DB:", isExistingUser.password);
 
   const isPasswordMatched = await bcrypt.compare(
     payload.password,

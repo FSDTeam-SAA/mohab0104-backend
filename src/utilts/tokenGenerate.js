@@ -11,7 +11,9 @@ const createToken = (payload, secret, expiresIn) => {
 };
 
 const verifyToken = (token, secret) => {
-  return jwt.verify(token, secret);
+  console.log('Verifying token:', token) // Log the token
+
+  return jwt.verify(token, secret)
 };
 
 module.exports = {
