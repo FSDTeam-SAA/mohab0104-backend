@@ -35,42 +35,46 @@ exports.createSolution = async (req, res) => {
 
 exports.getAllSolutions = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-    const search = req.query.search || "";
+    console.log("first")
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
+    const search = req.query.search || ''
 
     const filter = {
       $or: [
-        { solutionName: { $regex: search, $options: "i" } },
-        { solutionDescription: { $regex: search, $options: "i" } },
+        { solutionName: { $regex: search, $options: 'i' } },
+        { solutionDescription: { $regex: search, $options: 'i' } },
       ],
-    };
+    }
 
-    const solutionsList = await solutions
-      .find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    const [totalItems, solutionsList] = await Promise.all([
+      solutions.countDocuments(filter),
+      solutions.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    ])
 
-    const totalSolutions = await solutions.countDocuments(filter);
+    const totalPages = Math.ceil(totalItems / limit)
 
     return res.status(200).json({
-      status: true,
-      message: "Solutions retrieved successfully",
+      success: true,
+      message: 'Solutions retrieved successfully',
       data: solutionsList,
-      totalPages: Math.ceil(totalSolutions / limit),
-      currentPage: page,
-    });
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        itemsPerPage: limit,
+      },
+    })
   } catch (error) {
-    
     return res.status(500).json({
-      status: false,
-      message: "Error retrieving solutions",
+      success: false,
+      message: 'Error retrieving solutions',
       error: error.message,
-    });
+    })
   }
-};
+}
+
 // Update a solution by ID
 exports.updateSolution = async (req, res) => {
   try {
