@@ -1,7 +1,7 @@
 // const paypal = require("@paypal/checkout-server-sdk");
-const createPaypalClient = require("../../lib/paypalClient");
-const PaymentInfo = require("./payment.model");
-const User = require("../user/user.model");
+const createPaypalClient = require('../../lib/paypalClient')
+const PaymentInfo = require('./payment.model')
+const User = require('../user/user.model')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 // Create Payment
@@ -145,47 +145,46 @@ exports.createPayment = async (req, res) => {
 
 // Confirm Payment – Stripe will automatically confirm via webhook or frontend, but optionally:
 exports.confirmPayment = async (req, res) => {
-  const { paymentIntentId } = req.body;
+  const { paymentIntentId } = req.body
 
   if (!paymentIntentId) {
     return res.status(400).json({
-      error: "paymentIntentId is required.",
-    });
+      error: 'paymentIntentId is required.',
+    })
   }
 
   try {
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
 
-    if (paymentIntent.status === "succeeded") {
+    if (paymentIntent.status === 'succeeded') {
       // Update payment record
       await PaymentInfo.findOneAndUpdate(
         { transactionId: paymentIntentId },
-        { status: "success" }
-      );
+        { status: 'success' }
+      )
 
       return res.status(200).json({
         success: true,
-        message: "Payment successfully captured.",
+        message: 'Payment successfully captured.',
         paymentIntent,
-      });
+      })
     } else {
       await PaymentInfo.findOneAndUpdate(
         { transactionId: paymentIntentId },
-        { status: "failed" }
-      );
+        { status: 'failed' }
+      )
 
       return res.status(400).json({
-        error: "Payment was not successful.",
-      });
+        error: 'Payment was not successful.',
+      })
     }
   } catch (error) {
-    console.error("Error confirming payment:", error);
+    console.error('Error confirming payment:', error)
     res.status(500).json({
-      error: "Internal server error.",
-    });
+      error: 'Internal server error.',
+    })
   }
-};
-
+}
 
 exports.getMyPayments = async (req, res) => {
   try {
@@ -232,15 +231,14 @@ exports.getMyPayments = async (req, res) => {
   }
 }
 
-
 exports.getAllPayments = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1 
+    const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
     const skip = (page - 1) * limit
 
     const [totalItems, payments] = await Promise.all([
-      PaymentInfo.countDocuments({}),
+      PaymentInfo.countDocuments({ status: 'success' }),
       PaymentInfo.find({})
         .populate('userId', 'firstName lastName email')
         .populate('serviceId')
@@ -268,4 +266,3 @@ exports.getAllPayments = async (req, res) => {
     })
   }
 }
-
