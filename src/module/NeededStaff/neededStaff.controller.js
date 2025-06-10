@@ -1,5 +1,6 @@
 const User = require("../user/user.model");
 const NeededStaff = require("./neededStaff.model");
+const  { getPaginationParams, buildMetaPagination }  = require("../../utils/pagination")
 
 exports.createNeededStaff = async (req, res) => {
   try {
@@ -49,28 +50,42 @@ exports.createNeededStaff = async (req, res) => {
 };
 
 // Get all staff members
+
 exports.getAllNeededStaff = async (req, res) => {
   try {
-    const { email: userEmail } = req.user; // Assuming user email is available in req.user
+    const { email: userEmail } = req.user
     if (!userEmail) {
       return res.status(400).json({
-        status: false,
-        message: "User not found.",
-      });
+        success: false,
+        message: 'User not found.',
+      })
     }
-    const staffMembers = await NeededStaff.find();
+
+    const { page, limit, skip } = getPaginationParams(req.query)
+
+    const [staffMembers, totalItems] = await Promise.all([
+      NeededStaff.find().skip(skip).limit(limit),
+      NeededStaff.countDocuments(),
+    ])
+
+    const pagination = buildMetaPagination(totalItems, page, limit)
+
     return res.status(200).json({
-      status: true,
-      message: "Staff members retrieved successfully",
+      success: true,
+      message: 'Staff members retrieved successfully',
       data: staffMembers,
-    });
+      pagination,
+    })
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving staff members",
+      success: false,
+      message: 'Error retrieving staff members',
       error: error.message,
-    });
+    })
   }
-};
+}
+
+
 // Get a single staff member by user
 exports.getNeededStaffByUser = async (req, res) => {
   try {
