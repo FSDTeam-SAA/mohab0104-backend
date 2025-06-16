@@ -26,7 +26,7 @@ const auth = (...roles) => {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "Internal server error",
+        message: "You are not authenticated",
       });
     }
   };
