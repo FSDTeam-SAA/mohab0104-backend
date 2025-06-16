@@ -272,7 +272,10 @@ exports.getBookingPercentageByCategory = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "category percentage get successfully.",
-      usersWithBookings: userSet.size,
+      // usersWithBookings: userSet.size,
+      userBookingPercentage: totalUsersInSystem
+        ? parseFloat(((userSet.size / totalUsersInSystem) * 100).toFixed(2))
+        : 0,
       data,
     });
   } catch (error) {
