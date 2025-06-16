@@ -4,7 +4,9 @@ const {
   confirmPayment,
   getMyPayments,
   getAllPayments,
-} = require('./payment.controller')
+  getMonthlyStats,
+  getBookingPercentageByCategory,
+} = require("./payment.controller");
 const { create } = require("./payment.model");
 const auth = require("../../middleware/auth");
 const USER_ROLE = require("../user/user.constant");
@@ -14,10 +16,16 @@ const router = express.Router();
 router.post("/create-payment", createPayment);
 
 // Capture Payment
-router.post("/confirm-payment", confirmPayment)
+router.post("/confirm-payment", confirmPayment);
 
 router.get("/my-payments", auth(USER_ROLE.user), getMyPayments);
 router.get("/", auth(USER_ROLE.admin), getAllPayments);
+router.get("/stats", auth(USER_ROLE.admin), getMonthlyStats);
+router.get(
+  "/category-stats",
+  auth(USER_ROLE.admin),
+  getBookingPercentageByCategory
+);
 
 const paymentRouter = router;
 module.exports = paymentRouter;
