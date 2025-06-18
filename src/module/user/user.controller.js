@@ -1,13 +1,24 @@
+const config = require("../../config");
 const userService = require("./user.service");
 
 const createUser = async (req, res) => {
   try {
     const result = await userService.createUserInDb(req.body);
 
+    const { refreshToken, accessToken } = result;
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: config.NODE_ENV === "production",
+      sameSite: config.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     return res.status(200).json({
       success: true,
       message: "User created successfully, please verify your email",
-      data: result,
+      data: {
+        accessToken,
+      },
     });
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });

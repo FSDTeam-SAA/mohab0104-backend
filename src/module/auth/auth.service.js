@@ -5,6 +5,7 @@ const { createToken } = require("../../utilts/tokenGenerate");
 const verificationCodeTemplate = require("../../utilts/verificationCodeTemplate");
 const User = require("../user/user.model");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const loginUser = async (payload) => {
   const isExistingUser = await User.findOne({
@@ -48,12 +49,53 @@ const loginUser = async (payload) => {
     config.JWT_EXPIRES_IN
   );
 
+  const refreshToken = createToken(
+    JwtToken,
+    config.refreshTokenSecret,
+    config.jwtRefreshTokenExpiresIn
+  );
+
   return {
     accessToken,
     user: userObj,
+    refreshToken,
   };
 };
 
+const LoginRefreshToken = async (token) => {
+  let decodedToken;
+
+  try {
+    decodedToken = jwt.verify(token, config.refreshTokenSecret);
+
+    if (!decodedToken || !decodedToken.email) {
+      throw new Error("You are not authorized!");
+    }
+  } catch (error) {
+    throw new Error("Unauthorized!");
+  }
+
+  const email = decodedToken.email;
+  const userData = await User.findOne({ email });
+
+  if (!userData) {
+    throw new Error("User not found!");
+  }
+
+  const JwtToken = {
+    userId: userData._id,
+    role: userData.role,
+    email: userData.email,
+  };
+
+  const accessToken = createToken(
+    JwtToken,
+    config.JWT_SECRET,
+    config.JWT_EXPIRES_IN
+  );
+
+  return { accessToken };
+};
 
 const forgotPassword = async (email) => {
   if (!email) throw new Error("Email is required");
@@ -157,16 +199,16 @@ const changePassword = async (payload, email) => {
   if (!currentPassword || !newPassword) {
     throw new Error("Current and new passwords are required");
   }
-  console.log("first", email)
+  console.log("first", email);
 
   const isExistingUser = await User.findOne({ email });
-  console.log("first", isExistingUser)
+  console.log("first", isExistingUser);
   if (!isExistingUser) throw new Error("User not found");
 
   const isPasswordMatched = await bcrypt.compare(
     currentPassword,
     isExistingUser.password
-  )
+  );
   if (!isPasswordMatched) throw new Error("Invalid current password");
 
   const hashedPassword = await bcrypt.hash(
@@ -186,6 +228,7 @@ const changePassword = async (payload, email) => {
 
 const authService = {
   loginUser,
+  LoginRefreshToken,
   forgotPassword,
   verifyToken,
   resetPassword,

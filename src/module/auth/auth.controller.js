@@ -1,23 +1,56 @@
+const config = require("../../config");
 const authService = require("./auth.service");
 
 const loginUser = async (req, res) => {
   try {
-    const result = await authService.loginUser(req.body)
+    const result = await authService.loginUser(req.body);
+
+    const { refreshToken, accessToken, user } = result;
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: config.NODE_ENV === "production",
+      sameSite: config.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     // Remove password from user object before sending it back
     if (result.isExistingUser && result.isExistingUser.password) {
-      delete result.isExistingUser.password
+      delete result.isExistingUser.password;
     }
 
     return res.status(200).json({
       success: true,
-      message: 'User logged in successfully',
-      data: result,
-    })
+      message: "User logged in successfully",
+      data: {
+        accessToken,
+        user,
+      },
+    });
   } catch (error) {
-    return res.status(400).json({ success: false, message: error.message })
+    return res.status(400).json({ success: false, message: error.message });
   }
-}
+};
+
+const refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.cookies;
+    if (!refreshToken)
+      return res.status(401).json({
+        success: false,
+        message: "No refresh token provided",
+      });
+
+    const data = await authService.LoginRefreshToken(refreshToken);
+
+    res.status(200).json({
+      success: true,
+      message: "Access token refreshed successfully",
+      data,
+    });
+  } catch (err) {
+    res.status(401).json({ success: false, message: err.message });
+  }
+};
 
 const forgotPassword = async (req, res) => {
   try {
@@ -80,10 +113,9 @@ const changePassword = async (req, res) => {
   }
 };
 
-
-
 const authController = {
   loginUser,
+  refreshToken,
   forgotPassword,
   verifyToken,
   resetPassword,
