@@ -51,7 +51,13 @@ const createUserInDb = async (payload) => {
     config.JWT_EXPIRES_IN
   );
 
-  return { accessToken };
+  const refreshToken = createToken(
+    JwtToken,
+    config.refreshTokenSecret,
+    config.jwtRefreshTokenExpiresIn
+  );
+
+  return { accessToken, refreshToken };
 };
 
 const verifyUserEmail = async (payload, email) => {
