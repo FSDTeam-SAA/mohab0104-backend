@@ -9,51 +9,56 @@ const strategyRouter = require("../module/Strategy/strategy.router");
 const paymentRouter = require("../module/payments/payment.router");
 const sendMessageRouter = require("../module/contract/contract.router");
 const neededStaffRouter = require("../module/NeededStaff/neededStaff.router");
+const dataSetRouter = require("../module/DataSet/dataset.router");
 const router = Router();
 
 const moduleRouter = [
   {
-    path: '/user',
+    path: "/user",
     router: userRouter,
   },
   {
-    path: '/auth',
+    path: "/auth",
     router: authRouter,
   },
   // Add other module routers here
   //blogRouter
   {
-    path: '/blog',
+    path: "/blog",
     router: blogRouter,
   },
   //servicesRouter
   {
-    path: '/services',
+    path: "/services",
     router: serviceRouter,
   },
   //solutionRouter
   {
-    path: '/solution',
+    path: "/solution",
     router: solutionRouter,
   },
   //strategyRouter
   {
-    path: '/strategy',
+    path: "/strategy",
     router: strategyRouter,
   },
   {
-    path: '/payment',
+    path: "/payment",
     router: paymentRouter,
   },
   {
-    path: '/contact',
+    path: "/contact",
     router: sendMessageRouter,
   },
   {
-    path: '/needed-staff',
-    router: neededStaffRouter
-  }
-]
+    path: "/needed-staff",
+    router: neededStaffRouter,
+  },
+  {
+    path: "/data-set",
+    router: dataSetRouter,
+  },
+];
 
 moduleRouter.forEach((route) => {
   router.use(route.path, route.router);
