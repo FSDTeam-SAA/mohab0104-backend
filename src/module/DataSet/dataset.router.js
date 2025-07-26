@@ -2,10 +2,16 @@ const { Router } = require("express");
 const dataSetController = require("./dataset.controller");
 const auth = require("../../middleware/auth");
 const USER_ROLE = require("../user/user.constant");
+const { upload } = require("../../utilts/cloudnary");
 
 const router = Router();
 
-router.post("/create/:userId", dataSetController.createDataSet);
+router.post(
+  "/create/:userId",
+  upload.single("file"),
+  dataSetController.createDataSet
+);
+
 router.get("/all", dataSetController.getDataSet);
 router.get(
   "/my",
@@ -21,7 +27,7 @@ router.get(
 
 router.put(
   "/update/:dataSetId",
-  //   auth(USER_ROLE.user, USER_ROLE.admin),
+  upload.single("file"), // handle uploaded JSON file under "file" key
   dataSetController.updateDataSet
 );
 

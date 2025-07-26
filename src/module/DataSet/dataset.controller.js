@@ -3,9 +3,8 @@ const dataSetService = require("./dataset.service");
 const createDataSet = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { dataSet } = req.body;
 
-    const result = await dataSetService.createDataSet(dataSet, userId);
+    const result = await dataSetService.createDataSet(userId, req.file);
     return res.status(200).json({
       success: true,
       message: "Data added successfully",
@@ -71,9 +70,8 @@ const getSingleDataSet = async (req, res) => {
 const updateDataSet = async (req, res) => {
   try {
     const { dataSetId } = req.params;
-    const { dataSet } = req.body;
+    const result = await dataSetService.updateDataSet(dataSetId, req.file);
 
-    const result = await dataSetService.updateDataSet(dataSetId, dataSet);
     return res.status(200).json({
       success: true,
       message: "Data updated successfully",
@@ -94,7 +92,6 @@ const deletedDataSet = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Data deleted successfully",
-
     });
   } catch (error) {
     return res
