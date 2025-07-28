@@ -4,16 +4,26 @@ const createDataSet = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
+
     const result = await dataSetService.createDataSet(userId, req.file);
+
     return res.status(200).json({
       success: true,
       message: "Data added successfully",
       data: result,
     });
   } catch (error) {
-    return res
-      .status(400)
-      .json({ success: false, message: error.message, error });
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Failed to save data",
+      error: error, // send full error details if any
+    });
   }
 };
 
