@@ -2,7 +2,7 @@ const { Router } = require("express");
 const dataSetController = require("./dataset.controller");
 const auth = require("../../middleware/auth");
 const USER_ROLE = require("../user/user.constant");
-const { upload } = require("../../utilts/cloudnary");
+const upload = require("../../utilts/fileUpload");
 
 const router = Router();
 

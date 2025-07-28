@@ -1,51 +1,19 @@
 const fs = require("fs");
 const User = require("../user/user.model");
 const DataSet = require("./dataset.model");
-const { default: mongoose } = require("mongoose");
 
 const createDataSet = async (userId, file) => {
-  if (!file) {
-    throw new Error("No file uploaded");
-  }
-
-  // Validate ObjectId format before querying
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    throw new Error("Invalid userId format");
-  }
-
   const user = await User.findById(userId);
-  if (!user) {
-    throw new Error("User not found");
-  }
+  if (!user) throw new Error("User not found");
 
-  let fileContent;
-  try {
-    fileContent = fs.readFileSync(file.path, "utf-8");
-  } catch (error) {
-    throw new Error("Error reading uploaded file");
-  }
+  const rawData = fs.readFileSync(file);
+  const jsonData = JSON.parse(rawData);
+  console.log("final data set", jsonData);
 
-  let parsedData;
-  try {
-    parsedData = JSON.parse(fileContent);
-  } catch (error) {
-    throw new Error("Uploaded file is not valid JSON");
-  }
-
-  const dataSets = Array.isArray(parsedData) ? parsedData : [parsedData];
-
-  let result;
-  try {
-    result = await DataSet.create({
-      userId: mongoose.Types.ObjectId(userId),
-      dataSets,
-    });
-    console.log("Saved result:", result);
-  } catch (err) {
-    console.error("Error saving to MongoDB:", err);
-    // Throw the original error for controller to handle
-    throw err;
-  }
+  const result = Array.isArray(jsonData)
+    ? await DataSet.insertMany(jsonData)
+    : await DataSet.create(jsonData);
+  console.log(result);
 
   return result;
 };
