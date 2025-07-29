@@ -1,0 +1,122 @@
+[
+  {
+    "date": "2025-01-15",
+    "category": "Electronics",
+    "region": "North",
+    "revenue": 1200,
+    "quantity": 30,
+    "product": "Wireless Headphones",
+    "serviceProvided": "Free Installation",
+    "client": "TechNova Corp",
+    "salesChannel": "Online",
+    "feedbackScore": 4.5
+  },
+  {
+    "date": "2025-01-22",
+    "category": "Clothing",
+    "region": "South",
+    "revenue": 800,
+    "quantity": 45,
+    "product": "Winter Jackets",
+    "serviceProvided": "Express Delivery",
+    "client": "Urban Styles Inc",
+    "salesChannel": "Retail",
+    "feedbackScore": 4.2
+  },
+  {
+    "date": "2025-02-05",
+    "category": "Home Goods",
+    "region": "East",
+    "revenue": 950,
+    "quantity": 40,
+    "product": "Blender Set",
+    "serviceProvided": "Demo at Store",
+    "client": "HomeWave",
+    "salesChannel": "Online",
+    "feedbackScore": 4.6
+  },
+  {
+    "date": "2025-03-10",
+    "category": "Electronics",
+    "region": "West",
+    "revenue": 1500,
+    "quantity": 25,
+    "product": "Smartwatch",
+    "serviceProvided": "2-Year Warranty",
+    "client": "ChronoTech",
+    "salesChannel": "Online",
+    "feedbackScore": 4.8
+  },
+  {
+    "date": "2025-04-18",
+    "category": "Clothing",
+    "region": "East",
+    "revenue": 600,
+    "quantity": 30,
+    "product": "Yoga Pants",
+    "serviceProvided": "Try & Return",
+    "client": "FitLife Apparel",
+    "salesChannel": "Retail",
+    "feedbackScore": 4.1
+  },
+  {
+    "date": "2025-05-25",
+    "category": "Home Goods",
+    "region": "South",
+    "revenue": 700,
+    "quantity": 35,
+    "product": "Electric Kettle",
+    "serviceProvided": "3-Day Trial",
+    "client": "CozyNest",
+    "salesChannel": "Online",
+    "feedbackScore": 4.4
+  },
+  {
+    "date": "2025-06-08",
+    "category": "Electronics",
+    "region": "North",
+    "revenue": 2100,
+    "quantity": 50,
+    "product": "Gaming Laptop",
+    "serviceProvided": "In-home Setup",
+    "client": "PixelEdge",
+    "salesChannel": "Online",
+    "feedbackScore": 4.9
+  },
+  {
+    "date": "2025-07-12",
+    "category": "Clothing",
+    "region": "West",
+    "revenue": 1100,
+    "quantity": 40,
+    "product": "Designer Shirts",
+    "serviceProvided": "Tailored Fit",
+    "client": "Elite Threads",
+    "salesChannel": "Retail",
+    "feedbackScore": 4.3
+  },
+  {
+    "date": "2025-08-20",
+    "category": "Home Goods",
+    "region": "East",
+    "revenue": 980,
+    "quantity": 42,
+    "product": "Air Purifier",
+    "serviceProvided": "Installation & Setup",
+    "client": "FreshAir Living",
+    "salesChannel": "Online",
+    "feedbackScore": 4.7
+  },
+  {
+    "date": "2025-09-14",
+    "category": "Electronics",
+    "region": "South",
+    "revenue": 1340,
+    "quantity": 38,
+    "product": "Bluetooth Speaker",
+    "serviceProvided": "Same-Day Shipping",
+    "client": "BeatStorm",
+    "salesChannel": "Online",
+    "feedbackScore": 4.6
+  }
+]

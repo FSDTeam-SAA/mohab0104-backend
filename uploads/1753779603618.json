@@ -1,0 +1,72 @@
+[
+  {
+    "date": "2025-01-15",
+    "category": "Electronics",
+    "region": "North",
+    "revenue": 1200,
+    "quantity": 30
+  },
+  {
+    "date": "2025-01-22",
+    "category": "Clothing",
+    "region": "South",
+    "revenue": 800,
+    "quantity": 45
+  },
+  {
+    "date": "2025-02-05",
+    "category": "Home Goods",
+    "region": "East",
+    "revenue": 950,
+    "quantity": 40
+  },
+  {
+    "date": "2025-03-10",
+    "category": "Electronics",
+    "region": "West",
+    "revenue": 1500,
+    "quantity": 25
+  },
+  {
+    "date": "2025-04-18",
+    "category": "Clothing",
+    "region": "East",
+    "revenue": 600,
+    "quantity": 30
+  },
+  {
+    "date": "2025-05-25",
+    "category": "Home Goods",
+    "region": "South",
+    "revenue": 700,
+    "quantity": 35
+  },
+  {
+    "date": "2025-06-08",
+    "category": "Electronics",
+    "region": "North",
+    "revenue": 2100,
+    "quantity": 50
+  },
+  {
+    "date": "2025-07-12",
+    "category": "Clothing",
+    "region": "West",
+    "revenue": 1100,
+    "quantity": 40
+  },
+  {
+    "date": "2025-08-20",
+    "category": "Home Goods",
+    "region": "East",
+    "revenue": 980,
+    "quantity": 42
+  },
+  {
+    "date": "2025-09-14",
+    "category": "Electronics",
+    "region": "South",
+    "revenue": 1340,
+    "quantity": 38
+  }
+]
