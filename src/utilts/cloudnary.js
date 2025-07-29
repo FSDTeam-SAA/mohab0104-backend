@@ -12,13 +12,16 @@ cloudinary.config({
 
 const sendImageToCloudinary = (imageName, filePath) => {
   const ext = path.extname(filePath).toLowerCase();
-  const isImage = [".jpg", ".jpeg", ".png", ".gif", ".webp"].includes(ext);
+  const isImage = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".json"].includes(
+    ext
+  );
 
   if (!isImage) {
     return Promise.reject(
-      new Error("Only image files can be uploaded to Cloudinary.")
+      new Error("Only image and JSON files are allowed for upload")
     );
   }
+  console.log(filePath);
 
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
@@ -29,13 +32,14 @@ const sendImageToCloudinary = (imageName, filePath) => {
         fs.unlink(filePath, (err) => {
           if (err) {
             console.log("Failed to delete local file:", err);
-          } else {
+          } else {  
             console.log("File deleted from local uploads.");
           }
         });
 
         if (error) return reject(error);
-        resolve(result);
+        console.log(result);
+         resolve(result);
       }
     );
   });

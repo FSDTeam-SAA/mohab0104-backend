@@ -3,11 +3,9 @@ const dataSetService = require("./dataset.service");
 const createDataSet = async (req, res) => {
   try {
     const { userId } = req.params;
-    const fileUrl = req.file.path;
-    console.log("klf")
-    const result = await dataSetService.createDataSet(userId, fileUrl);
+    const result = await dataSetService.createDataSet(userId, req.file);
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Data set created",
       data: result,

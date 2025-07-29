@@ -2,41 +2,27 @@ const fs = require("fs");
 const path = require("path");
 const User = require("../user/user.model");
 const DataSet = require("./dataset.model");
+const { sendImageToCloudinary } = require("../../utilts/cloudnary");
 
-const createDataSet = async (userId, filePath) => {
+const createDataSet = async (userId, file) => {
+  console.log(file);
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
 
-  const rawData = await fs.promises.readFile(filePath, "utf-8");
+  if (!file) throw new Error("File is required");
 
-  let jsonData;
-  try {
-    jsonData = JSON.parse(rawData);
-  } catch (err) {
-    throw new Error("Invalid JSON format");
-  }
+  const imageName = `${Date.now()}-${file.originalname}`;
+  console.log(imageName);
+  const path = file.path;
+  console.log(path);
+  const { secure_url } = await sendImageToCloudinary(imageName, path);
 
-  let finalDataSets = [];
-
-  if (Array.isArray(jsonData)) {
-    finalDataSets = jsonData; // Directly assign the array
-  } else if (typeof jsonData === "object" && jsonData !== null) {
-    finalDataSets = [jsonData]; // Wrap single object in array
-  } else {
-    throw new Error("Unsupported JSON format");
-  }
-
-  // Create one document with an array of mixed-type data
-  const newDataSet = await DataSet.create({
-    userId,
-    dataSets: finalDataSets,
+  const dataSet = await DataSet.create({
+    userId: userId,
+    dataSets: secure_url,
   });
 
-  // Link it to the user
-  user.dataSets.push(newDataSet._id);
-  await user.save();
-
-  return newDataSet;
+  return dataSet;
 };
 
 const getDataSet = async () => {
