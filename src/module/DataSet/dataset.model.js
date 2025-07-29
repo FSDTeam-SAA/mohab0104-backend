@@ -6,12 +6,10 @@ const dataSetSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    dataSets: [
-      {
-        type: Schema.Types.Mixed,
-        required: true,
-      },
-    ],
+    dataSets: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,
