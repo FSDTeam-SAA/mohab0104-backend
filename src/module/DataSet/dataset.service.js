@@ -5,17 +5,17 @@ const DataSet = require("./dataset.model");
 const { sendImageToCloudinary } = require("../../utilts/cloudnary");
 
 const createDataSet = async (userId, file) => {
-  console.log(file);
+  console.log(file); // ✅ good for debugging
+
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
 
   if (!file) throw new Error("File is required");
 
   const imageName = `${Date.now()}-${file.originalname}`;
-  console.log(imageName);
-  const path = file.path;
-  console.log(path);
-  const { secure_url } = await sendImageToCloudinary(imageName, path);
+  const filePath = file.path;
+
+  const { secure_url } = await sendImageToCloudinary(imageName, filePath);
 
   const dataSet = await DataSet.create({
     userId: userId,
