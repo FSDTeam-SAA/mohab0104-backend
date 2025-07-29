@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const User = require("../user/user.model");
 const DataSet = require("./dataset.model");
 
@@ -6,34 +7,36 @@ const createDataSet = async (userId, filePath) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
 
-  const rawData = await fs.promises.readFile(filePath, "utf-8"); 
-  const jsonData = JSON.parse(rawData);
+  const rawData = await fs.promises.readFile(filePath, "utf-8");
 
-  console.log(
-    "Parsed JSON sample:",
-    Array.isArray(jsonData) ? jsonData[0] : jsonData
-  );
-
-  let inserted;
-
-  if (Array.isArray(jsonData)) {
-    inserted = await DataSet.insertMany(jsonData);
-    const ids = inserted.map((item) => item._id);
-    user.dataSets.push(...ids);
-  } else {
-    const single = await DataSet.create({
-      userId,
-      dataSets: [jsonData],
-    });
-    inserted = single;
-    user.dataSets.push(single._id);
+  let jsonData;
+  try {
+    jsonData = JSON.parse(rawData);
+  } catch (err) {
+    throw new Error("Invalid JSON format");
   }
 
+  let finalDataSets = [];
+
+  if (Array.isArray(jsonData)) {
+    finalDataSets = jsonData; // Directly assign the array
+  } else if (typeof jsonData === "object" && jsonData !== null) {
+    finalDataSets = [jsonData]; // Wrap single object in array
+  } else {
+    throw new Error("Unsupported JSON format");
+  }
+
+  // Create one document with an array of mixed-type data
+  const newDataSet = await DataSet.create({
+    userId,
+    dataSets: finalDataSets,
+  });
+
+  // Link it to the user
+  user.dataSets.push(newDataSet._id);
   await user.save();
 
-  console.log("Final saved data:", inserted);
-
-  return inserted;
+  return newDataSet;
 };
 
 const getDataSet = async () => {
