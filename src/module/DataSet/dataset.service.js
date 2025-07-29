@@ -2,20 +2,38 @@ const fs = require("fs");
 const User = require("../user/user.model");
 const DataSet = require("./dataset.model");
 
-const createDataSet = async (userId, file) => {
+const createDataSet = async (userId, filePath) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
 
-  const rawData = fs.readFileSync(file);
+  const rawData = await fs.promises.readFile(filePath, "utf-8"); 
   const jsonData = JSON.parse(rawData);
-  console.log("final data set", jsonData);
 
-  const result = Array.isArray(jsonData)
-    ? await DataSet.insertMany(jsonData)
-    : await DataSet.create(jsonData);
-  console.log(result);
+  console.log(
+    "Parsed JSON sample:",
+    Array.isArray(jsonData) ? jsonData[0] : jsonData
+  );
 
-  return result;
+  let inserted;
+
+  if (Array.isArray(jsonData)) {
+    inserted = await DataSet.insertMany(jsonData);
+    const ids = inserted.map((item) => item._id);
+    user.dataSets.push(...ids);
+  } else {
+    const single = await DataSet.create({
+      userId,
+      dataSets: [jsonData],
+    });
+    inserted = single;
+    user.dataSets.push(single._id);
+  }
+
+  await user.save();
+
+  console.log("Final saved data:", inserted);
+
+  return inserted;
 };
 
 const getDataSet = async () => {

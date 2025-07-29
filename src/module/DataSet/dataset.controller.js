@@ -3,15 +3,18 @@ const dataSetService = require("./dataset.service");
 const createDataSet = async (req, res) => {
   try {
     const { userId } = req.params;
-    const result = await dataSetService.createDataSet(userId, req.file.path);
+    const fileUrl = req.file.path;
+
+    const result = await dataSetService.createDataSet(userId, fileUrl);
 
     return res.status(200).json({
       success: true,
-      message: "Data set created successfully",
+      message: "Data set created",
       data: result,
     });
   } catch (error) {
-    return res.status(400).json({ success: false, message: error.message });
+    console.error(error);
+    return res.status(500).json({ success: false, error: error.message });
   }
 };
 
