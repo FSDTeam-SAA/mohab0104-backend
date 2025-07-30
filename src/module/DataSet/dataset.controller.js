@@ -42,12 +42,15 @@ const createDataSet = async (req, res) => {
 
 const getDataSet = async (req, res) => {
   try {
-    const result = await dataSetService.getDataSet();
+    const page = parseInt(req.query.page) || 1; // Default to page 1
+    const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+
+    const result = await dataSetService.getDataSet(page, limit);
 
     return res.status(200).json({
       success: true,
-      message: "All Data retrieved successfully",
-      data: result,
+      message: "Data retrieved successfully",
+      ...result, // includes data, total, page, totalPages
     });
   } catch (error) {
     return res
