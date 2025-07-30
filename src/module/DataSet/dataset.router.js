@@ -14,7 +14,11 @@ router.post(
 );
 
 router.get("/all", auth(USER_ROLE.admin), dataSetController.getDataSet);
-router.get("/my", auth(USER_ROLE.user), dataSetController.getMyDataSet);
+router.get(
+  "/my",
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  dataSetController.getMyDataSet
+);
 
 router.get(
   "/:dataSetId",

@@ -6,7 +6,7 @@ const getDataSet = async (page, limit) => {
   const [data, total] = await Promise.all([
     DataSet.find().skip(skip).limit(limit).populate({
       path: "userId",
-      select: "companyName",
+      select: "companyName firstName lastName email imageLink",
     }),
     DataSet.countDocuments(),
   ]);
