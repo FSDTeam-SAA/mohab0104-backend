@@ -1,123 +1,141 @@
-const { sendImageToCloudinary } = require('../../utilts/cloudnary')
-const User = require('../user/user.model')
-const DataSet = require('./dataset.model')
+const { sendImageToCloudinary } = require("../../utilts/cloudnary");
+const User = require("../user/user.model");
+const DataSet = require("./dataset.model");
+const dataSetService = require("./dataset.service");
 
 const createDataSet = async (req, res) => {
   try {
-    const { userId } = req.params
+    const { userId } = req.params;
 
-    const file = req.file
+    const file = req.file;
 
-    const user = await User.findById(userId)
-    if (!user) throw new Error('User not found')
+    const user = await User.findById(userId);
+    if (!user) throw new Error("User not found");
 
-    if (!file) throw new Error('File is required')
+    if (!file) throw new Error("File is required");
 
-    const imageName = `${Date.now()}-${file.originalname}`
-    const filePath = file.path
+    const imageName = `${Date.now()}-${file.originalname}`;
+    const filePath = file.path;
 
-    const { secure_url } = await sendImageToCloudinary(imageName, filePath)
+    const { secure_url } = await sendImageToCloudinary(imageName, filePath);
 
     const dataSet = new DataSet({
       userId: userId,
       dataSets: secure_url,
-    })
+    });
 
-    const _dataset = await dataSet.save()
+    const _dataset = await dataSet.save();
 
     res.status(200).json({
       success: true,
-      message: 'Data set created',
+      message: "Data set created",
       data: _dataset,
-    })
+    });
   } catch (error) {
-    console.error(error)
-    return res.status(500).json({ success: false, error: error.message })
+    console.error(error);
+    return res.status(500).json({ success: false, error: error.message });
   }
-}
+};
 
 const getDataSet = async (req, res) => {
   try {
-    const result = await dataSetService.getDataSet()
+    const result = await dataSetService.getDataSet();
 
     return res.status(200).json({
       success: true,
-      message: 'All Data retrieved successfully',
+      message: "All Data retrieved successfully",
       data: result,
-    })
+    });
   } catch (error) {
     return res
       .status(400)
-      .json({ success: false, message: error.message, error })
+      .json({ success: false, message: error.message, error });
   }
-}
+};
 
 const getMyDataSet = async (req, res) => {
   try {
-    const { userId } = req.user
-    const result = await dataSetService.getMyDataSet(userId)
+    const { userId } = req.user;
+    const result = await dataSetService.getMyDataSet(userId);
 
     return res.status(200).json({
       success: true,
-      message: 'Data retrieved successfully',
+      message: "Data retrieved successfully",
       data: result,
-    })
+    });
   } catch (error) {
     return res
       .status(400)
-      .json({ success: false, message: error.message, error })
+      .json({ success: false, message: error.message, error });
   }
-}
+};
 
 const getSingleDataSet = async (req, res) => {
   try {
-    const { dataSetId } = req.params
-    const result = await dataSetService.getSingleDataSet(dataSetId)
+    const { dataSetId } = req.params;
+    const result = await dataSetService.getSingleDataSet(dataSetId);
 
     return res.status(200).json({
       success: true,
-      message: 'Data details retrieved successfully',
+      message: "Data details retrieved successfully",
       data: result,
-    })
+    });
   } catch (error) {
     return res
       .status(400)
-      .json({ success: false, message: error.message, error })
+      .json({ success: false, message: error.message, error });
   }
-}
+};
 
 const updateDataSet = async (req, res) => {
   try {
-    const { dataSetId } = req.params
-    const result = await dataSetService.updateDataSet(dataSetId, req.file)
+    const { dataSetId } = req.params;
+    const file = req.file;
+
+    const data = await DataSet.findById(dataSetId);
+    if (!data) throw new Error("Data not found");
+
+    if (!file) throw new Error("File is required");
+
+    const imageName = `${Date.now()}-${file.originalname}`;
+    const filePath = file.path;
+
+    const { secure_url } = await sendImageToCloudinary(imageName, filePath);
+
+    const dataSet = await DataSet({
+      dataSetId,
+      dataSets: secure_url,
+    });
+
+    const _dataset = await dataSet.save();
 
     return res.status(200).json({
       success: true,
-      message: 'Data updated successfully',
-      data: result,
-    })
+      message: "Data updated successfully",
+      data: _dataset,
+    });
   } catch (error) {
     return res
       .status(400)
-      .json({ success: false, message: error.message, error })
+      .json({ success: false, message: error.message, error });
   }
-}
+};
 
 const deletedDataSet = async (req, res) => {
   try {
-    const { dataSetId } = req.params
-    const result = await dataSetService.deletedDataSet(dataSetId)
+    const { dataSetId } = req.params;
+    const result = await dataSetService.deletedDataSet(dataSetId);
 
     return res.status(200).json({
       success: true,
-      message: 'Data deleted successfully',
-    })
+      message: "Data deleted successfully",
+    });
   } catch (error) {
     return res
       .status(400)
-      .json({ success: false, message: error.message, error })
+      .json({ success: false, message: error.message, error });
   }
-}
+};
 
 const dataSetController = {
   createDataSet,
@@ -127,6 +145,6 @@ const dataSetController = {
   getSingleDataSet,
   updateDataSet,
   deletedDataSet,
-}
+};
 
-module.exports = dataSetController
+module.exports = dataSetController;

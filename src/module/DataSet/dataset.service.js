@@ -25,35 +25,35 @@ const getSingleDataSet = async (dataSetId) => {
   return result
 }
 
-const updateDataSet = async (dataSetId, file) => {
-  const doc = await DataSet.findById(dataSetId)
-  if (!doc) throw new Error('Data set not found')
+// const updateDataSet = async (dataSetId, file) => {
+//   const doc = await DataSet.findById(dataSetId)
+//   if (!doc) throw new Error('Data set not found')
 
-  if (!file) throw new Error('No file uploaded')
+//   if (!file) throw new Error('No file uploaded')
 
-  const fileContent = fs.readFileSync(file.path, 'utf-8')
-  console.log(fileContent)
+//   const fileContent = fs.readFileSync(file.path, 'utf-8')
+//   console.log(fileContent)
 
-  let parsedData
-  try {
-    parsedData = JSON.parse(fileContent)
-  } catch {
-    throw new Error('Invalid JSON file')
-  }
+//   let parsedData
+//   try {
+//     parsedData = JSON.parse(fileContent)
+//   } catch {
+//     throw new Error('Invalid JSON file')
+//   }
 
-  const dataSets = Array.isArray(parsedData) ? parsedData : [parsedData]
-  console.log('final data set', dataSets)
+//   const dataSets = Array.isArray(parsedData) ? parsedData : [parsedData]
+//   console.log('final data set', dataSets)
 
-  doc.dataSets = dataSets
-  const result = await doc.save()
+//   doc.dataSets = dataSets
+//   const result = await doc.save()
 
-  // Optionally delete file
-  fs.unlink(file.path, (err) => {
-    if (err) console.error('Failed to delete file:', err)
-  })
+//   // Optionally delete file
+//   fs.unlink(file.path, (err) => {
+//     if (err) console.error('Failed to delete file:', err)
+//   })
 
-  return result
-}
+//   return result
+// }
 
 const deletedDataSet = async (dataSetId) => {
   const doc = await DataSet.findById(dataSetId)
@@ -67,7 +67,7 @@ const dataSetService = {
   getDataSet,
   getMyDataSet,
   getSingleDataSet,
-  updateDataSet,
+  // updateDataSet,
   deletedDataSet,
 }
 
