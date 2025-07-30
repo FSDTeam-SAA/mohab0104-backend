@@ -1,4 +1,5 @@
 const { sendImageToCloudinary } = require("../../utilts/cloudnary");
+const paymentInfo = require("../payments/payment.model");
 const User = require("../user/user.model");
 const DataSet = require("./dataset.model");
 const dataSetService = require("./dataset.service");
@@ -11,7 +12,8 @@ const createDataSet = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) throw new Error("User not found");
 
-    if (user.isPaid === false) throw new Error("Please upgrade your plan");
+    const payment = await paymentInfo.findOne({ userId: userId });
+    if (!payment) throw new Error("Payment not found");
 
     if (!file) throw new Error("File is required");
 
