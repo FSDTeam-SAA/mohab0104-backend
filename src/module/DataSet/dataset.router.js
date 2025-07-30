@@ -9,6 +9,19 @@ const router = Router();
 router.post(
   "/create/:userId",
   upload.single("file"),
+  (req, res, next) => {
+    if (req.body?.data) {
+      try {
+        req.body = JSON.parse(req.body.data);
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid JSON format in 'data' field",
+        });
+      }
+    }
+    next();
+  },
   auth(USER_ROLE.admin),
   dataSetController.createDataSet
 );
@@ -28,7 +41,20 @@ router.get(
 
 router.put(
   "/update/:dataSetId",
-  upload.single("file"), // handle uploaded JSON file under "file" key
+  upload.single("file"),
+  (req, res, next) => {
+    if (req.body?.data) {
+      try {
+        req.body = JSON.parse(req.body.data);
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid JSON format in 'data' field",
+        });
+      }
+    }
+    next();
+  },
   auth(USER_ROLE.admin),
   dataSetController.updateDataSet
 );

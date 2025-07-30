@@ -2,9 +2,13 @@ const { Schema, model, models } = require("mongoose");
 
 const dataSetSchema = new Schema(
   {
+    dataSetName: {
+      type: String,
+      required: true,
+    },
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
     },
     dataSets: {
       type: String,
@@ -14,7 +18,7 @@ const dataSetSchema = new Schema(
   {
     timestamps: true,
   }
-)
+);
 
-const DataSet = models.DataSet || model('DataSet', dataSetSchema)
+const DataSet = models.DataSet || model("DataSet", dataSetSchema);
 module.exports = DataSet;

@@ -7,6 +7,7 @@ const dataSetService = require("./dataset.service");
 const createDataSet = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { dataSetName } = req.body;
     const file = req.file;
 
     const user = await User.findById(userId);
@@ -23,6 +24,7 @@ const createDataSet = async (req, res) => {
     const { secure_url } = await sendImageToCloudinary(imageName, filePath);
 
     const dataSet = new DataSet({
+      dataSetName: dataSetName,
       userId: userId,
       dataSets: secure_url,
     });
@@ -96,6 +98,7 @@ const getSingleDataSet = async (req, res) => {
 const updateDataSet = async (req, res) => {
   try {
     const { dataSetId } = req.params;
+    const { dataSetName } = req.body;
     const file = req.file;
 
     const data = await DataSet.findById(dataSetId);
@@ -109,6 +112,7 @@ const updateDataSet = async (req, res) => {
     const { secure_url } = await sendImageToCloudinary(imageName, filePath);
 
     const dataSet = await DataSet({
+      dataSetName: dataSetName,
       dataSetId,
       dataSets: secure_url,
     });
