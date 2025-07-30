@@ -1,41 +1,41 @@
-const { Router } = require("express");
-const dataSetController = require("./dataset.controller");
-const auth = require("../../middleware/auth");
-const USER_ROLE = require("../user/user.constant");
-const { upload } = require("../../utilts/cloudnary");
+const { Router } = require('express')
+const dataSetController = require('./dataset.controller')
+const auth = require('../../middleware/auth')
+const USER_ROLE = require('../user/user.constant')
+const { upload } = require('../../utilts/cloudnary')
 
-const router = Router();
+const router = Router()
 
 router.post(
-  "/create/:userId",
-  upload.single("file"),
+  '/create/:userId',
+  upload.single('file'),
   dataSetController.createDataSet
-);
+)
 
-router.get("/all", dataSetController.getDataSet);
+router.get('/all', dataSetController.getDataSet)
 router.get(
-  "/my",
+  '/my',
   auth(USER_ROLE.user, USER_ROLE.admin),
   dataSetController.getMyDataSet
-);
+)
 
 router.get(
-  "/:dataSetId",
+  '/:dataSetId',
   //   auth(USER_ROLE.user, USER_ROLE.admin),
   dataSetController.getSingleDataSet
-);
+)
 
 router.put(
-  "/update/:dataSetId",
-  upload.single("file"), // handle uploaded JSON file under "file" key
+  '/update/:dataSetId',
+  upload.single('file'), // handle uploaded JSON file under "file" key
   dataSetController.updateDataSet
-);
+)
 
 router.delete(
-  "/delete/:dataSetId",
+  '/delete/:dataSetId',
   //   auth(USER_ROLE.user, USER_ROLE.admin),
   dataSetController.deletedDataSet
-);
+)
 
-const dataSetRouter = router;
-module.exports = dataSetRouter;
+const dataSetRouter = router
+module.exports = dataSetRouter

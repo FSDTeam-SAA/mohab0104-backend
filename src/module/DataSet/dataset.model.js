@@ -1,10 +1,10 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, models } = require("mongoose");
 
 const dataSetSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     dataSets: {
       type: String,
@@ -14,7 +14,7 @@ const dataSetSchema = new Schema(
   {
     timestamps: true,
   }
-);
+)
 
-const DataSet = model("DataSet", dataSetSchema);
+const DataSet = models.DataSet || model('DataSet', dataSetSchema)
 module.exports = DataSet;
