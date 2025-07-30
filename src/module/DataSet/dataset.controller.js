@@ -6,11 +6,12 @@ const dataSetService = require("./dataset.service");
 const createDataSet = async (req, res) => {
   try {
     const { userId } = req.params;
-
     const file = req.file;
 
     const user = await User.findById(userId);
     if (!user) throw new Error("User not found");
+
+    if (user.isPaid === false) throw new Error("Please upgrade your plan");
 
     if (!file) throw new Error("File is required");
 
@@ -124,7 +125,7 @@ const updateDataSet = async (req, res) => {
 const deletedDataSet = async (req, res) => {
   try {
     const { dataSetId } = req.params;
-    const result = await dataSetService.deletedDataSet(dataSetId);
+    await dataSetService.deletedDataSet(dataSetId);
 
     return res.status(200).json({
       success: true,
