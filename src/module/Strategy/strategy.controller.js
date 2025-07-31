@@ -25,7 +25,6 @@ exports.createStrategy = async (req, res) => {
       data: newStrategy,
     });
   } catch (error) {
-    
     res.status(500).json({
       status: false,
       message: "Error creating strategy",
@@ -71,9 +70,10 @@ exports.getAllStrategies = async (req, res) => {
       data: strategies,
       totalPages: Math.ceil(totalSolutions / limit),
       currentPage: page,
+      totalItems: totalSolutions,
+      itemsPerPage: limit,
     });
   } catch (error) {
-    
     return res.status(500).json({
       status: false,
       message: "Error retrieving strategies",
@@ -85,42 +85,42 @@ exports.getAllStrategies = async (req, res) => {
 //get strategies by user email
 exports.getStrategiesByUserEmail = async (req, res) => {
   try {
-    const { email: userEmail } = req.user
+    const { email: userEmail } = req.user;
 
-    const isExist = await User.findOne({ email: userEmail })
+    const isExist = await User.findOne({ email: userEmail });
     if (!isExist) {
       return res.status(400).json({
         status: false,
-        message: 'User not found.',
-      })
+        message: "User not found.",
+      });
     }
 
     // Pagination params with defaults
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 10
-    const skip = (page - 1) * limit
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
     const [strategies, totalItems] = await Promise.all([
       strategy
         .find({ email: userEmail })
-        .sort({ createdAt: -1 }) 
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
       strategy.countDocuments({ email: userEmail }),
-    ])
+    ]);
 
     if (strategies.length === 0) {
       return res.status(200).json({
         status: false,
-        message: 'No strategies found for this user',
-      })
+        message: "No strategies found for this user",
+      });
     }
 
-    const totalPages = Math.ceil(totalItems / limit)
+    const totalPages = Math.ceil(totalItems / limit);
 
     res.status(200).json({
       status: true,
-      message: 'Strategies retrieved successfully',
+      message: "Strategies retrieved successfully",
       data: strategies,
       pagination: {
         currentPage: page,
@@ -128,15 +128,15 @@ exports.getStrategiesByUserEmail = async (req, res) => {
         totalItems,
         itemsPerPage: limit,
       },
-    })
+    });
   } catch (error) {
     res.status(500).json({
       status: false,
-      message: 'Error retrieving strategies by user email',
+      message: "Error retrieving strategies by user email",
       error: error.message,
-    })
+    });
   }
-}
+};
 
 //get strategy by id
 exports.getStrategyById = async (req, res) => {
@@ -161,7 +161,6 @@ exports.getStrategyById = async (req, res) => {
       data: strategyData,
     });
   } catch (error) {
-    
     res.status(500).json({
       status: false,
       message: "Error retrieving strategy",
@@ -192,7 +191,6 @@ exports.updateStrategy = async (req, res) => {
       data: updatedStrategy,
     });
   } catch (error) {
-    
     res.status(500).json({
       status: false,
       message: "Error updating strategy",
@@ -218,7 +216,6 @@ exports.deleteStrategy = async (req, res) => {
       message: "Strategy deleted successfully",
     });
   } catch (error) {
-    
     res.status(500).json({
       status: false,
       message: "Error deleting strategy",
