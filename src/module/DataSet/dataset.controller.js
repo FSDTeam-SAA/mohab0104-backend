@@ -10,6 +10,8 @@ const createDataSet = async (req, res) => {
     const { dataSetName } = req.body;
     const file = req.file;
 
+    if (!dataSetName) throw new Error("Data set name is required");
+
     const user = await User.findById(userId);
     if (!user) throw new Error("User not found");
 
@@ -112,13 +114,13 @@ const updateDataSet = async (req, res) => {
       const { secure_url } = await sendImageToCloudinary(imageName, filePath);
       updatedFields.dataSets = secure_url;
     } else if (dataSets) {
-      updatedFields.dataSets = dataSets; 
+      updatedFields.dataSets = dataSets;
     }
 
     const updatedData = await DataSet.findByIdAndUpdate(
       dataSetId,
       updatedFields,
-      { new: true } 
+      { new: true }
     );
 
     return res.status(200).json({
