@@ -4,7 +4,6 @@ const dataSetSchema = new Schema(
   {
     dataSetName: {
       type: String,
-      required: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
