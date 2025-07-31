@@ -104,7 +104,7 @@ const updateDataSet = async (req, res) => {
     const data = await DataSet.findById(dataSetId);
     if (!data) throw new Error("Data not found");
 
-    if (!file) throw new Error("File is required");
+    // if (!file) throw new Error("File is required");
 
     const imageName = `${Date.now()}-${file.originalname}`;
     const filePath = file.path;
