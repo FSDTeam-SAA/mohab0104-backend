@@ -98,36 +98,40 @@ const getSingleDataSet = async (req, res) => {
 const updateDataSet = async (req, res) => {
   try {
     const { dataSetId } = req.params;
-    const { dataSetName } = req.body;
+    const { dataSetName, dataSets } = req.body;
     const file = req.file;
 
-    const data = await DataSet.findById(dataSetId);
-    if (!data) throw new Error("Data not found");
+    const existingData = await DataSet.findById(dataSetId);
+    if (!existingData) throw new Error("Data not found");
 
-    // if (!file) throw new Error("File is required");
+    let updatedFields = { dataSetName };
 
-    const imageName = `${Date.now()}-${file.originalname}`;
-    const filePath = file.path;
+    if (file) {
+      const imageName = `${Date.now()}-${file.originalname}`;
+      const filePath = file.path;
+      const { secure_url } = await sendImageToCloudinary(imageName, filePath);
+      updatedFields.dataSets = secure_url;
+    } else if (dataSets) {
+      updatedFields.dataSets = dataSets; 
+    }
 
-    const { secure_url } = await sendImageToCloudinary(imageName, filePath);
-
-    const dataSet = await DataSet({
-      dataSetName: dataSetName,
+    const updatedData = await DataSet.findByIdAndUpdate(
       dataSetId,
-      dataSets: secure_url,
-    });
-
-    const _dataset = await dataSet.save();
+      updatedFields,
+      { new: true } 
+    );
 
     return res.status(200).json({
       success: true,
       message: "Data updated successfully",
-      data: _dataset,
+      data: updatedData,
     });
   } catch (error) {
-    return res
-      .status(400)
-      .json({ success: false, message: error.message, error });
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+      error,
+    });
   }
 };
 
@@ -149,7 +153,6 @@ const deletedDataSet = async (req, res) => {
 
 const dataSetController = {
   createDataSet,
-
   getDataSet,
   getMyDataSet,
   getSingleDataSet,
