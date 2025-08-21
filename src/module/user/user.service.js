@@ -13,6 +13,13 @@ const createUserInDb = async (payload) => {
     throw new Error("User already exists and is verified");
   }
 
+  if (payload.phone) {
+    const existingUser = await User.findOne({ phone: payload.phone });
+    if (existingUser && existingUser.isVerified) {
+      throw new Error("This phone number is already exist");
+    }
+  }
+
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const hashedOtp = await bcrypt.hash(otp, 10);
   const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
